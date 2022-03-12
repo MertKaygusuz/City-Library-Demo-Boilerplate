@@ -17,5 +17,6 @@ import { Book_Repo } from './domain/books.interface.repo';
     BooksResolver,
     BooksService,
   ],
+  exports: [Book_Repo],
 })
 export class BooksModule {}

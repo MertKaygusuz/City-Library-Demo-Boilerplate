@@ -16,4 +16,9 @@ export class BooksRepo
   ) {
     super(bookMongoRepository as Repository<Book>);
   }
+
+  async getDistinctNumberOfField(field: string): Promise<number> {
+    const result = await this.bookMongoRepository.distinct(field, {});
+    return result.length;
+  }
 }

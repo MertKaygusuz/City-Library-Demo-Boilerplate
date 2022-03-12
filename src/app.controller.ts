@@ -11,12 +11,14 @@ export class AppController {
   }
 
   @Get('/seed-data')
-  seedData() {
+  seedData(): string {
     this.appService.seedData();
+    return 'Seed was succeeded!';
   }
 
   @Get('/delete-all-data')
   deleteAllData() {
     this.appService.deleteAllData();
+    return 'Delete was succeded!';
   }
 }

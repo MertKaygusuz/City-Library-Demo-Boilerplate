@@ -27,9 +27,13 @@ export abstract class BaseEntityModel<T extends string | ObjectID> {
   @Column()
   @Index()
   deletedBy?: string;
+  @Column()
+  @Index()
+  isDeleted: boolean;
 
   @BeforeInsert()
   beforeInsertActions() {
+    this.isDeleted = false;
     this.createdAt = Date.now();
   }
 }

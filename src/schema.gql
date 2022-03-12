@@ -14,14 +14,37 @@ type Member {
   roles: [Role!]!
 }
 
+type Book {
+  authorName: String!
+  bookTitle: String!
+
+  """Edition date in epoch milliseconds"""
+  firstPublishedDate: Int!
+  editionNumber: Int!
+
+  """Edition date in epoch milliseconds"""
+  editionDate: Int!
+  availableCount: Int!
+  reservedCount: Int!
+  titleType: Int!
+  coverType: Int!
+}
+
 type Query {
   getMembersByMemberName(memberName: String!): Member!
   getMembersByMemberId(memberId: String!): Member!
+  books: [Book!]!
+  getDistinctBookTitleNumber: Int!
 }
 
 type Mutation {
   register(registrationInput: RegistrationInput!): String!
   adminUpdateMember(registrationInput: RegistrationInput!): Boolean!
+  createBook(registerBookInput: RegisterBookInput!): String!
+  updateBook(updateBookInput: UpdateBookInput!): Boolean!
+
+  """Soft delete operation for book records"""
+  removeBook(id: String!): Boolean!
 }
 
 input RegistrationInput {
@@ -32,4 +55,35 @@ input RegistrationInput {
   birthDate: Int!
   address: String!
   password: String!
+}
+
+input RegisterBookInput {
+  authorName: String!
+  bookTitle: String!
+
+  """Publish date in epoch milliseconds"""
+  firstPublishDate: Int!
+  editionNumber: Int!
+
+  """Edition date in epoch milliseconds"""
+  editionDate: Int!
+  titleType: Int!
+  coverType: Int!
+  availableCount: Int!
+}
+
+input UpdateBookInput {
+  authorName: String
+  bookTitle: String
+
+  """Publish date in epoch milliseconds"""
+  firstPublishDate: Int
+  editionNumber: Int
+
+  """Edition date in epoch milliseconds"""
+  editionDate: Int
+  titleType: Int
+  coverType: Int
+  availableCount: Int
+  id: String!
 }

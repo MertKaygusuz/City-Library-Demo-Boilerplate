@@ -1,35 +1,39 @@
 import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
 import { BooksService } from './books.service';
 import { Book } from './entities/book.entity';
-import { CreateBookInput } from './dto/create-book.input';
 import { UpdateBookInput } from './dto/update-book.input';
+import { RegisterBookInput } from './dto/register-book.input';
 
-//@Resolver(() => Book)
+@Resolver(() => Book)
 export class BooksResolver {
   constructor(private readonly booksService: BooksService) {}
 
-  //@Mutation(() => Book)
-  createBook(@Args('createBookInput') createBookInput: CreateBookInput) {
-    return this.booksService.create(createBookInput);
+  @Mutation(() => String)
+  createBook(@Args('registerBookInput') registerBookInput: RegisterBookInput) {
+    return this.booksService.create(registerBookInput);
   }
 
-  //@Query(() => [Book], { name: 'books' })
+  @Query(() => [Book], { name: 'books' })
   findAll() {
     return this.booksService.findAll();
   }
 
-  //@Query(() => Book, { name: 'book' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.booksService.findOne(id);
+  @Query(() => Int)
+  async getDistinctBookTitleNumber(): Promise<number> {
+    return await this.booksService.getDistinctBookTitleNumber();
   }
 
-  //@Mutation(() => Book)
-  updateBook(@Args('updateBookInput') updateBookInput: UpdateBookInput) {
-    return this.booksService.update(updateBookInput.id, updateBookInput);
+  @Mutation(() => Boolean)
+  async updateBook(@Args('updateBookInput') updateBookInput: UpdateBookInput) {
+    await this.booksService.update(updateBookInput);
+    return true;
   }
 
-  //@Mutation(() => Book)
-  removeBook(@Args('id', { type: () => Int }) id: number) {
-    return this.booksService.remove(id);
+  @Mutation(() => Boolean, {
+    description: 'Soft delete operation for book records',
+  })
+  removeBook(@Args('id', { type: () => String }) id: string) {
+    this.booksService.remove(id);
+    return true;
   }
 }
