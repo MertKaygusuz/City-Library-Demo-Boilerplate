@@ -71,7 +71,6 @@ export class BaseRepository<
 
   public async deleteByIdSoftly(id: S): Promise<UpdateResult> {
     const updatedFields = {
-      isDeleted: true,
       deletedAt: Date.now(),
     } as unknown as QueryDeepPartialEntity<T>;
     return await this.entity.update(id, updatedFields);
@@ -81,7 +80,6 @@ export class BaseRepository<
     condition: FindConditions<T>,
   ): Promise<UpdateResult> {
     const updatedFields = {
-      isDeleted: true,
       deletedAt: Date.now(),
     } as unknown as QueryDeepPartialEntity<T>;
     return await this.entity.update(condition, updatedFields);

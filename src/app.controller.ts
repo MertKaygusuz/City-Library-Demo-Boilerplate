@@ -9,4 +9,14 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('/seed-data')
+  seedData() {
+    this.appService.seedData();
+  }
+
+  @Get('/delete-all-data')
+  deleteAllData() {
+    this.appService.deleteAllData();
+  }
 }

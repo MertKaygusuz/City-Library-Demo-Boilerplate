@@ -18,19 +18,18 @@ export abstract class BaseEntityModel<T extends string | ObjectID> {
   @Column()
   updatedAt?: number | null;
   @Column()
+  @Index()
   deletedAt?: number | null;
   @Column()
   createdBy: string;
   @Column()
   updatedBy?: string;
   @Column()
+  @Index()
   deletedBy?: string;
-  @Column()
-  isDeleted: boolean;
 
   @BeforeInsert()
   beforeInsertActions() {
-    this.isDeleted = false;
     this.createdAt = Date.now();
   }
 }

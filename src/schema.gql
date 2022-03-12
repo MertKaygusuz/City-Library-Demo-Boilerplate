@@ -3,27 +3,33 @@
 # ------------------------------------------------------
 
 type Role {
-  roleName: Int!
+  roleName: String!
+}
+
+type Member {
+  memberName: String!
+  fullName: String!
+  birthDate: String!
+  address: String!
+  roles: [Role!]!
 }
 
 type Query {
-  roles: [Role!]!
-  role(id: Int!): Role!
+  getMembersByMemberName(memberName: String!): Member!
+  getMembersByMemberId(memberId: String!): Member!
 }
 
 type Mutation {
-  createRole(createRoleInput: CreateRoleInput!): Role!
-  updateRole(updateRoleInput: UpdateRoleInput!): Role!
-  removeRole(id: Int!): Role!
+  register(registrationInput: RegistrationInput!): String!
+  adminUpdateMember(registrationInput: RegistrationInput!): Boolean!
 }
 
-input CreateRoleInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
+input RegistrationInput {
+  memberName: String!
+  fullName: String!
 
-input UpdateRoleInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+  """Birth date in epoch milliseconds"""
+  birthDate: Int!
+  address: String!
+  password: String!
 }

@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { RolesModule } from './modules/roles/roles.module';
 import { MembersModule } from './modules/members/members.module';
 import { BooksModule } from './modules/books/books.module';
 import { ActiveBookReservationsModule } from './modules/active-book-reservations/active-book-reservations.module';
@@ -15,8 +14,7 @@ import { ActiveBookReservation } from './modules/active-book-reservations/entiti
 import { BookReservationHistory } from './modules/book-reservation-histories/entities/book-reservation-history.entity';
 import { Book } from './modules/books/entities/book.entity';
 import { Member } from './modules/members/entities/member.entity';
-import { Role } from './modules/roles/entities/role.entity';
-
+import { Role } from './modules/members/entities/role.entity';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -42,7 +40,6 @@ import { Role } from './modules/roles/entities/role.entity';
       ],
     }),
     MembersModule,
-    RolesModule,
     BooksModule,
     ActiveBookReservationsModule,
     BookReservationHistoriesModule,

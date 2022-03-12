@@ -5,7 +5,7 @@ import { Column, Entity, Index } from 'typeorm';
 @Entity({ name: 'Roles' })
 @ObjectType()
 export class Role extends BaseEntityModel<string> {
-  @Field(() => Int)
+  @Field(() => String)
   @Column()
   @Index({ unique: true })
   roleName: string;
