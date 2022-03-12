@@ -3,18 +3,17 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MembersModule } from './modules/members/members.module';
 import { BooksModule } from './modules/books/books.module';
-import { ActiveBookReservationsModule } from './modules/active-book-reservations/active-book-reservations.module';
-import { BookReservationHistoriesModule } from './modules/book-reservation-histories/book-reservation-histories.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { join } from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ActiveBookReservation } from './modules/active-book-reservations/entities/active-book-reservation.entity';
-import { BookReservationHistory } from './modules/book-reservation-histories/entities/book-reservation-history.entity';
+import { ActiveBookReservation } from './modules/book-reservations/entities/active-book-reservation.entity';
+import { BookReservationHistory } from './modules/book-reservations/entities/book-reservation-history.entity';
 import { Book } from './modules/books/entities/book.entity';
 import { Member } from './modules/members/entities/member.entity';
 import { Role } from './modules/members/entities/role.entity';
+import { BookReservationsModule } from './modules/book-reservations/book-reservations.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,8 +40,7 @@ import { Role } from './modules/members/entities/role.entity';
     }),
     MembersModule,
     BooksModule,
-    ActiveBookReservationsModule,
-    BookReservationHistoriesModule,
+    BookReservationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
