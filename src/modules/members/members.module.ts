@@ -24,6 +24,6 @@ import { RolesRepo } from './domain/roles.repo';
     MembersResolver,
     MembersService,
   ],
-  exports: [Member_Repo, Role_Repo],
+  exports: [Member_Repo, Role_Repo, MembersService],
 })
 export class MembersModule {}

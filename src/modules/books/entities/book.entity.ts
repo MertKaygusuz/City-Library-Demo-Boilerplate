@@ -1,4 +1,4 @@
-import { Field, Int, ObjectType } from '@nestjs/graphql';
+import { Field, Float, Int, ObjectType } from '@nestjs/graphql';
 import { BookCoverTypes } from 'src/common/enums/book-cover-types';
 import { BookTitleTypes } from 'src/common/enums/book-title-types';
 import { BaseEntityModel } from 'src/domain-base/base-entity-model';
@@ -8,64 +8,46 @@ import { AfterLoad, Column, Entity } from 'typeorm';
 @ObjectType()
 export class Book extends BaseEntityModel<string> {
   @Column()
-  @Field(() => String, {
-    nullable: false,
-  })
+  @Field(() => String)
   authorName: string;
 
   @Column()
-  @Field(() => String, {
-    nullable: false,
-  })
+  @Field(() => String)
   bookTitle: string;
 
   @Column()
-  @Field(() => Int, {
+  @Field(() => Float, {
     description: 'Edition date in epoch milliseconds',
-    nullable: false,
   })
   firstPublishedDate: number;
 
   @Column()
-  @Field(() => Int, {
-    nullable: false,
-  })
+  @Field(() => Int)
   editionNumber: number;
 
   @Column()
-  @Field(() => Int, {
+  @Field(() => Float, {
     description: 'Edition date in epoch milliseconds',
-    nullable: false,
   })
   editionDate: number;
 
   @Column()
-  @Field(() => Int, {
-    nullable: false,
-  })
+  @Field(() => Int)
   availableCount: number;
 
   @Column()
-  @Field(() => Int, {
-    nullable: false,
-  })
+  @Field(() => Int)
   reservedCount: number;
 
-  @Field(() => Int, {
-    nullable: false,
-  })
+  @Field(() => Int)
   @Column('int')
   titleType: BookTitleTypes;
 
-  @Field(() => Int, {
-    nullable: false,
-  })
+  @Field(() => Int)
   @Column('int')
   coverType: BookCoverTypes;
 
-  @Field(() => String, {
-    nullable: false,
-  })
+  @Field(() => String)
   bookId: string;
 
   @AfterLoad()

@@ -14,7 +14,7 @@ export class Role extends BaseEntityModel<string> {
   roleId: string;
 
   @AfterLoad()
-  getMemberIdField() {
+  getRoleIdField() {
     this.roleId = this._id;
   }
 }

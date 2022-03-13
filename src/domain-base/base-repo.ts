@@ -41,6 +41,18 @@ export class BaseRepository<
     return await this.entity.findOne({ where: filterCondition });
   }
 
+  public async countWithOptions(
+    relations: FindManyOptions<T>,
+  ): Promise<number> {
+    return await this.entity.count(relations);
+  }
+
+  public async countWithConditions(
+    relations: FindConditions<T>,
+  ): Promise<number> {
+    return await this.entity.count(relations);
+  }
+
   public async findWithOptions(relations: FindManyOptions<T>): Promise<T[]> {
     return await this.entity.find(relations);
   }

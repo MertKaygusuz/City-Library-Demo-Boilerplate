@@ -28,6 +28,10 @@ export interface IBaseRepository<
 
   findWithOptions(relations: FindManyOptions<T>): Promise<T[]>;
 
+  countWithOptions(relations: FindManyOptions<T>): Promise<number>;
+
+  countWithConditions(relations: FindConditions<T>): Promise<number>;
+
   findAndCountWithOptions(
     relations: FindManyOptions<T>,
   ): Promise<[T[], number]>;

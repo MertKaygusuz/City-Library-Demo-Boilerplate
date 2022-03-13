@@ -5,4 +5,5 @@ export const Book_Repo = 'Books Repository';
 
 export interface IBooksRepo extends IBaseRepository<Book, string> {
   getDistinctNumberOfField(field: string): Promise<number>;
+  getNumberOfBooksPerTitleAndEditionNumber(): Promise<any>;
 }

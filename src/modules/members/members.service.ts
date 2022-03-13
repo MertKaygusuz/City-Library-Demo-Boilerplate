@@ -16,6 +16,15 @@ export class MembersService {
     private readonly rolesRepo: IRolesRepo,
   ) {}
 
+  async countById(memberId: string): Promise<number> {
+    return await this.membersRepo.countWithOptions({
+      where: {
+        _id: memberId,
+        isDeleted: false,
+      },
+    });
+  }
+
   async getMembersByMemberName(memberName: string): Promise<Member> {
     const memberNameKey = nameof<Member>((x) => x.memberName);
     const result = await this.membersRepo.findOne({

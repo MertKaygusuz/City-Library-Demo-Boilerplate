@@ -4,4 +4,6 @@ import { ActiveBookReservation } from '../entities/active-book-reservation.entit
 export const Active_Reservations_Repo = 'Active Book Reservations Repository';
 
 export interface IActiveBookReservationsRepo
-  extends IBaseRepository<ActiveBookReservation, string> {}
+  extends IBaseRepository<ActiveBookReservation, string> {
+  getNumberOfBooksReservedPerMembers(): Promise<any>;
+}

@@ -1,4 +1,4 @@
-import { Field, ObjectType } from '@nestjs/graphql';
+import { Field, Float, ObjectType } from '@nestjs/graphql';
 import { BaseEntityModel } from 'src/domain-base/base-entity-model';
 import { Entity, Column, Index, AfterLoad } from 'typeorm';
 import { Role } from './role.entity';
@@ -16,7 +16,7 @@ export class Member extends BaseEntityModel<string> {
   fullName: string;
 
   @Column()
-  @Field(() => String)
+  @Field(() => Float)
   birthDate: number;
 
   @Column()

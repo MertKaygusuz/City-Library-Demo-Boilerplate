@@ -4,14 +4,16 @@
 
 type Role {
   roleName: String!
+  roleId: String!
 }
 
 type Member {
   memberName: String!
   fullName: String!
-  birthDate: String!
+  birthDate: Float!
   address: String!
   roles: [Role!]!
+  memberId: String!
 }
 
 type Book {
@@ -19,11 +21,11 @@ type Book {
   bookTitle: String!
 
   """Edition date in epoch milliseconds"""
-  firstPublishedDate: Int!
+  firstPublishedDate: Float!
   editionNumber: Int!
 
   """Edition date in epoch milliseconds"""
-  editionDate: Int!
+  editionDate: Float!
   availableCount: Int!
   reservedCount: Int!
   titleType: Int!
@@ -31,11 +33,54 @@ type Book {
   bookId: String!
 }
 
+type TotalAvailableCountsPerTitleEndEditionNumberResponseDto {
+  bookTitle: String!
+  editionNumber: Int!
+  totalAvailableCount: Int!
+}
+
+type ActiveBookReservationsResponseDto {
+  receivedDate: Float!
+  availableAt: Float!
+  memberId: String!
+  bookId: String!
+  getBookInfo: Book!
+  getMemberInfo: Member!
+}
+
+type NumberOfBooksReservedByMembersResponseDto {
+  activeBookReservationsCount: Int!
+  fullName: String!
+  memberName: String!
+  address: String!
+  birthDate: Float!
+}
+
+type ReservationHistoryResponseDto {
+  receivedDate: Float!
+  returnDate: Float!
+  memberId: String!
+  bookId: String!
+  getBookInfo: Book!
+  getMemberInfo: Member!
+}
+
 type Query {
   getMembersByMemberName(memberName: String!): Member!
   getMembersByMemberId(memberId: String!): Member!
   books: [Book!]!
+  getNumberOfBooksPerTitleAndEditionNumber: [TotalAvailableCountsPerTitleEndEditionNumberResponseDto!]!
   getDistinctBookTitleNumber: Int!
+  getAllActiveBookReservations(activeBookReservationsFilterInput: ActiveBookReservationsFilterInput!): [ActiveBookReservationsResponseDto!]!
+  getNumberOfBooksReservedPerMembers: [NumberOfBooksReservedByMembersResponseDto!]!
+  getReservedBooksEstimatedReturnDates(bookId: String!): [Float!]!
+  getReservationHistoriesByBookId(bookId: String!): [ReservationHistoryResponseDto!]!
+  getReservationHistoriesByMemberId(memberId: String!): [ReservationHistoryResponseDto!]!
+}
+
+input ActiveBookReservationsFilterInput {
+  memberId: String
+  bookId: String
 }
 
 type Mutation {
@@ -43,6 +88,9 @@ type Mutation {
   adminUpdateMember(registrationInput: RegistrationInput!): Boolean!
   createBook(registerBookInput: RegisterBookInput!): String!
   updateBook(updateBookInput: UpdateBookInput!): Boolean!
+
+  """Check with book id if there is available book"""
+  checkIfAnyAvailableBooks(id: String!): Boolean!
 
   """Soft delete operation for book records"""
   removeBook(id: String!): Boolean!
