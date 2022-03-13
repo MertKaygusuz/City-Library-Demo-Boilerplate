@@ -6,6 +6,7 @@ import { ObjectID } from 'mongodb';
 @Entity('ActiveBookReservations')
 export class ActiveBookReservation extends BaseEntityModel<string> {
   @Column()
+  @Index()
   receivedDate: number;
   @Index()
   @Column()

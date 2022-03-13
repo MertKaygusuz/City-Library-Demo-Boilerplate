@@ -1,4 +1,10 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { ObjectID } from 'mongodb';
 import { nameof } from 'ts-simple-nameof';
 import { Book_Repo, IBooksRepo } from './domain/books.interface.repo';
 import { RegisterBookInput } from './dto/register-book.input';
@@ -32,12 +38,29 @@ export class BooksService {
     });
   }
 
-  async countById(bookId: string): Promise<number> {
-    return await this.booksRepo.countWithOptions({
-      where: {
-        _id: bookId,
-        isDeleted: false,
-      },
+  async updateForReservation(bookId: string) {
+    const theBook = await this.booksRepo.findOne({
+      _id: new ObjectID(bookId),
+      isDeleted: false,
+    });
+    if (!theBook) throw new NotFoundException('Book could not be found!');
+    if (theBook.availableCount < 1)
+      throw new BadRequestException('Sorry! This book is not available now.');
+    await this.booksRepo.updateById(bookId, {
+      availableCount: theBook.availableCount - 1,
+      reservedCount: theBook.reservedCount + 1,
+    });
+  }
+
+  async updateForDispose(bookId: string) {
+    const theBook = await this.booksRepo.findOne({
+      _id: new ObjectID(bookId),
+      isDeleted: false,
+    });
+    if (!theBook) throw new NotFoundException('Book could not be found!');
+    await this.booksRepo.updateById(bookId, {
+      availableCount: theBook.availableCount + 1,
+      reservedCount: theBook.reservedCount - 1,
     });
   }
 
@@ -68,7 +91,7 @@ export class BooksService {
 
   async checkIfAnyAvailableBooks(bookId: string): Promise<boolean> {
     const book = await this.booksRepo.findWithOptions({
-      where: { _id: bookId },
+      where: { _id: new ObjectID(bookId) },
       select: ['availableCount'],
     });
 

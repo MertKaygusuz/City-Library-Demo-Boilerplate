@@ -5,7 +5,7 @@ import { IRolesRepo, Role_Repo } from './domain/roles.interface.repo';
 import { Member } from './entities/member.entity';
 import { RegistrationInput } from './dto/registration.input';
 import { createPasswordHash } from 'src/utils/functions/password-related';
-
+import { ObjectID } from 'mongodb';
 @Injectable()
 export class MembersService {
   defaultRoleNameList = ['User'];
@@ -16,13 +16,12 @@ export class MembersService {
     private readonly rolesRepo: IRolesRepo,
   ) {}
 
-  async countById(memberId: string): Promise<number> {
-    return await this.membersRepo.countWithOptions({
-      where: {
-        _id: memberId,
-        isDeleted: false,
-      },
+  async doesMemberExist(memberId: string): Promise<boolean> {
+    const member = await this.membersRepo.findOne({
+      _id: new ObjectID(memberId),
+      ['isDeleted']: false,
     });
+    return typeof member !== 'undefined';
   }
 
   async getMembersByMemberName(memberName: string): Promise<Member> {

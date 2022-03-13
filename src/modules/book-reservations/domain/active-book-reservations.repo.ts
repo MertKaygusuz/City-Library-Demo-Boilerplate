@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BaseRepository } from 'src/domain-base/base-repo';
-import { Book } from 'src/modules/books/entities/book.entity';
 import { Member } from 'src/modules/members/entities/member.entity';
 import { nameof } from 'ts-simple-nameof';
 import { MongoRepository, Repository } from 'typeorm';

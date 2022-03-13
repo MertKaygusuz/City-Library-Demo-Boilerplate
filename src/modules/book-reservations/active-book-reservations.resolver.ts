@@ -1,12 +1,11 @@
 import {
   Resolver,
   Query,
-  Mutation,
   Args,
-  Int,
   Parent,
   ResolveField,
   Float,
+  Mutation,
 } from '@nestjs/graphql';
 import { BooksService } from '../books/books.service';
 import { Book } from '../books/entities/book.entity';
@@ -15,6 +14,7 @@ import { MembersService } from '../members/members.service';
 import { BookReservationsService } from './book-reservations.service';
 import { ActiveBookReservationsFilterInput } from './dto/active-book-reservations.filter.input';
 import { ActiveBookReservationsResponseDto } from './dto/active-book-reservations.response.dto';
+import { AssigningBookInput } from './dto/assigning-book.input';
 import { NumberOfBooksReservedByMembersResponseDto } from './dto/number-of-books-reserved-by-members.response.dto';
 
 @Resolver(() => ActiveBookReservationsResponseDto)
@@ -65,5 +65,21 @@ export class ActiveBookReservationsResolver {
     return await this.membersService.getMembersByMemberId(
       bookReservations.memberId,
     );
+  }
+
+  @Mutation(() => Boolean)
+  async assignBookToMember(
+    @Args('assigningBookInput') assigningBookInput: AssigningBookInput,
+  ): Promise<boolean> {
+    await this.bookReservationsService.assignBookToMember(assigningBookInput);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  async unAssignBookToMember(
+    @Args('assigningBookInput') assigningBookInput: AssigningBookInput,
+  ): Promise<boolean> {
+    await this.bookReservationsService.unAssignBookToMember(assigningBookInput);
+    return true;
   }
 }
