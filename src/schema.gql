@@ -28,6 +28,7 @@ type Book {
   reservedCount: Int!
   titleType: Int!
   coverType: Int!
+  bookId: String!
 }
 
 type Query {

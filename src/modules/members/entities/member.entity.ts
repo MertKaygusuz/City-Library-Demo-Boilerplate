@@ -1,6 +1,6 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { BaseEntityModel } from 'src/domain-base/base-entity-model';
-import { Entity, Column, Index } from 'typeorm';
+import { Entity, Column, Index, AfterLoad } from 'typeorm';
 import { Role } from './role.entity';
 
 @Entity({ name: 'Members' })
@@ -29,4 +29,12 @@ export class Member extends BaseEntityModel<string> {
   @Column()
   @Field(() => [Role])
   roles: Role[];
+
+  @Field(() => String)
+  memberId: string;
+
+  @AfterLoad()
+  getMemberIdField() {
+    this.memberId = this._id;
+  }
 }

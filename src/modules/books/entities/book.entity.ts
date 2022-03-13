@@ -2,7 +2,7 @@ import { Field, Int, ObjectType } from '@nestjs/graphql';
 import { BookCoverTypes } from 'src/common/enums/book-cover-types';
 import { BookTitleTypes } from 'src/common/enums/book-title-types';
 import { BaseEntityModel } from 'src/domain-base/base-entity-model';
-import { Column, Entity } from 'typeorm';
+import { AfterLoad, Column, Entity } from 'typeorm';
 
 @Entity('Books')
 @ObjectType()
@@ -62,4 +62,14 @@ export class Book extends BaseEntityModel<string> {
   })
   @Column('int')
   coverType: BookCoverTypes;
+
+  @Field(() => String, {
+    nullable: false,
+  })
+  bookId: string;
+
+  @AfterLoad()
+  getBookIdField() {
+    this.bookId = this._id;
+  }
 }

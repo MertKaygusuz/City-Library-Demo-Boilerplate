@@ -2,6 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { BookCoverTypes } from './common/enums/book-cover-types';
 import { BookTitleTypes } from './common/enums/book-title-types';
 import {
+  Active_Reservations_Repo,
+  IActiveBookReservationsRepo,
+} from './modules/book-reservations/domain/active-book-reservations.repo.interface';
+import {
+  Book_Reservation_Histories_Repo,
+  IBookReservationHistoriesRepo,
+} from './modules/book-reservations/domain/book-reservation-histories.repo.interface';
+import { ActiveBookReservation } from './modules/book-reservations/entities/active-book-reservation.entity';
+import { BookReservationHistory } from './modules/book-reservations/entities/book-reservation-history.entity';
+import {
   Book_Repo,
   IBooksRepo,
 } from './modules/books/domain/books.interface.repo';
@@ -16,7 +26,10 @@ import {
 } from './modules/members/domain/roles.interface.repo';
 import { Member } from './modules/members/entities/member.entity';
 import { Role } from './modules/members/entities/role.entity';
-import { addYearsToEpochTime } from './utils/functions/date-time';
+import {
+  addYearsToEpochTime,
+  addDaysToEpochTime,
+} from './utils/functions/date-time';
 import { createPasswordHash } from './utils/functions/password-related';
 
 @Injectable()
@@ -28,6 +41,10 @@ export class AppService {
     private readonly rolesRepo: IRolesRepo,
     @Inject(Book_Repo)
     private readonly booksRepo: IBooksRepo,
+    @Inject(Active_Reservations_Repo)
+    private readonly activeBookReservationsRepo: IActiveBookReservationsRepo,
+    @Inject(Book_Reservation_Histories_Repo)
+    private readonly bookReservationsHistoriesRepo: IBookReservationHistoriesRepo,
   ) {}
 
   getHello(): string {
@@ -158,6 +175,71 @@ export class AppService {
     ];
 
     await this.booksRepo.insertMany(books);
+
+    const activeBookReservations: Array<ActiveBookReservation> = [
+      {
+        receivedDate: addDaysToEpochTime(dateNow, -4),
+        memberId: members[2]._id,
+        bookId: books[0]._id,
+        createdAt: dateNow,
+        isDeleted: false,
+      } as ActiveBookReservation,
+      {
+        receivedDate: addDaysToEpochTime(dateNow, -2),
+        memberId: members[2]._id,
+        bookId: books[1]._id,
+        createdAt: dateNow,
+        isDeleted: false,
+      } as ActiveBookReservation,
+      {
+        receivedDate: addDaysToEpochTime(dateNow, -6),
+        memberId: members[1]._id,
+        bookId: books[1]._id,
+        createdAt: dateNow,
+        isDeleted: false,
+      } as ActiveBookReservation,
+    ];
+
+    await this.activeBookReservationsRepo.insertMany(activeBookReservations);
+
+    const bookReservationHistories: Array<BookReservationHistory> = [
+      {
+        bookId: books[0]._id,
+        memberId: members[3]._id,
+        receivedDate: addDaysToEpochTime(dateNow, -40),
+        returnDate: addDaysToEpochTime(dateNow, -20),
+        createdAt: dateNow,
+        isDeleted: false,
+      } as BookReservationHistory,
+      {
+        bookId: books[1]._id,
+        memberId: members[3]._id,
+        receivedDate: addDaysToEpochTime(dateNow, -12),
+        returnDate: addDaysToEpochTime(dateNow, -3),
+        createdAt: dateNow,
+        isDeleted: false,
+      } as BookReservationHistory,
+      {
+        bookId: books[4]._id,
+        memberId: members[1]._id,
+        receivedDate: addDaysToEpochTime(dateNow, -22),
+        returnDate: addDaysToEpochTime(dateNow, -13),
+        createdAt: dateNow,
+        isDeleted: false,
+      } as BookReservationHistory,
+      {
+        bookId: books[4]._id,
+        memberId: members[2]._id,
+        receivedDate: addDaysToEpochTime(dateNow, -120),
+        returnDate: addDaysToEpochTime(dateNow, -100),
+        createdAt: dateNow,
+        isDeleted: false,
+      } as BookReservationHistory,
+    ];
+
+    await this.bookReservationsHistoriesRepo.insertMany(
+      bookReservationHistories,
+    );
   }
 
   async deleteAllData() {
@@ -165,6 +247,8 @@ export class AppService {
       this.membersRepo.delete({}),
       this.rolesRepo.delete({}),
       this.booksRepo.delete({}),
+      this.activeBookReservationsRepo.delete({}),
+      this.bookReservationsHistoriesRepo.delete({}),
     ]);
   }
 }
