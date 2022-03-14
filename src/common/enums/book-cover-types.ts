@@ -1,4 +1,4 @@
 export enum BookCoverTypes {
-  SoftCover,
-  HardCover,
+  SOFTCOVER,
+  HARDCOVER,
 }

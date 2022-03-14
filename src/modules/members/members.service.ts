@@ -19,7 +19,7 @@ export class MembersService {
   async doesMemberExist(memberId: string): Promise<boolean> {
     const member = await this.membersRepo.findOne({
       _id: new ObjectID(memberId),
-      ['isDeleted']: false,
+      [nameof<Member>((x) => x.isDeleted)]: false,
     });
     return typeof member !== 'undefined';
   }

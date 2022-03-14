@@ -1,4 +1,5 @@
 import { Field, InputType, Int } from '@nestjs/graphql';
+import { IsEnum } from 'class-validator';
 import { BookCoverTypes } from 'src/common/enums/book-cover-types';
 import { BookTitleTypes } from 'src/common/enums/book-title-types';
 
@@ -29,10 +30,12 @@ export class RegisterBookInput {
   @Field(() => Int, {
     nullable: false,
   })
+  @IsEnum(BookTitleTypes)
   titleType: BookTitleTypes;
   @Field(() => Int, {
     nullable: false,
   })
+  @IsEnum(BookCoverTypes)
   coverType: BookCoverTypes;
   @Field(() => Int, {
     nullable: false,
