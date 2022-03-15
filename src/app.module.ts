@@ -14,6 +14,9 @@ import { Book } from './modules/books/entities/book.entity';
 import { Member } from './modules/members/entities/member.entity';
 import { Role } from './modules/members/entities/role.entity';
 import { BookReservationsModule } from './modules/book-reservations/book-reservations.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { RedisModule } from '@liaoliaots/nestjs-redis';
+import { JwtModule } from '@nestjs/jwt';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -24,6 +27,21 @@ import { BookReservationsModule } from './modules/book-reservations/book-reserva
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: true,
       playground: true,
+    }),
+    JwtModule.register({
+      secret: process.env.TOKEN_SECURITY_KEY,
+      signOptions: {
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
+        issuer: process.env.TOKEN_ISSUER,
+        audience: process.env.TOKEN_AUDIENCE,
+      },
+    }),
+    RedisModule.forRootAsync({
+      useFactory: () => ({
+        config: {
+          url: process.env.REDIS_CONNECTION,
+        },
+      }),
     }),
     TypeOrmModule.forRoot({
       type: 'mongodb',
@@ -41,6 +59,7 @@ import { BookReservationsModule } from './modules/book-reservations/book-reserva
     MembersModule,
     BooksModule,
     BookReservationsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
