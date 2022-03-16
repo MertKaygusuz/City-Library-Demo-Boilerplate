@@ -28,14 +28,14 @@ import { JwtModule } from '@nestjs/jwt';
       debug: true,
       playground: true,
     }),
-    JwtModule.register({
-      secret: process.env.TOKEN_SECURITY_KEY,
-      signOptions: {
-        expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
-        issuer: process.env.TOKEN_ISSUER,
-        audience: process.env.TOKEN_AUDIENCE,
-      },
-    }),
+    // JwtModule.register({
+    //   secret: process.env.TOKEN_SECURITY_KEY,
+    //   signOptions: {
+    //     expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
+    //     issuer: process.env.TOKEN_ISSUER,
+    //     audience: process.env.TOKEN_AUDIENCE,
+    //   },
+    // }),
     RedisModule.forRootAsync({
       useFactory: () => ({
         config: {

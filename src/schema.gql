@@ -65,9 +65,9 @@ type ReservationHistoryResponseDto {
   getMemberInfo: Member!
 }
 
-type Auth {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type TokenReponseDto {
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
@@ -81,7 +81,6 @@ type Query {
   getReservedBooksEstimatedReturnDates(bookId: String!): [Float!]!
   getReservationHistoriesByBookId(bookId: String!): [ReservationHistoryResponseDto!]!
   getReservationHistoriesByMemberId(memberId: String!): [ReservationHistoryResponseDto!]!
-  auth(id: Int!): Auth!
 }
 
 input ActiveBookReservationsFilterInput {
@@ -102,9 +101,9 @@ type Mutation {
   removeBook(id: String!): Boolean!
   assignBookToMember(assigningBookInput: AssigningBookInput!): Boolean!
   unAssignBookToMember(assigningBookInput: AssigningBookInput!): Boolean!
-  createAuth(createAuthInput: CreateAuthInput!): Auth!
-  updateAuth(updateAuthInput: UpdateAuthInput!): Auth!
-  removeAuth(id: Int!): Auth!
+  login(loginInput: LoginInput!): TokenReponseDto!
+  refrehLogin(tokenKey: String!): TokenReponseDto!
+  logout(tokenKey: String!): Boolean!
 }
 
 input RegistrationInput {
@@ -153,13 +152,7 @@ input AssigningBookInput {
   memberId: String!
 }
 
-input CreateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
-}
-
-input UpdateAuthInput {
-  """Example field (placeholder)"""
-  exampleField: Int
-  id: Int!
+input LoginInput {
+  memberName: String!
+  password: String!
 }
