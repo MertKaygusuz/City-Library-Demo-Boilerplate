@@ -1,3 +1,4 @@
+import { RequestContext } from 'src/middlewares/request-context';
 import {
   DeepPartial,
   DeleteResult,
@@ -72,6 +73,7 @@ export class BaseRepository<
   public async deleteByIdSoftly(id: S): Promise<UpdateResult> {
     const updatedFields = {
       deletedAt: Date.now(),
+      deletedBy: RequestContext.getMemberIdFromRequest(),
     } as unknown as QueryDeepPartialEntity<T>;
     return await this.entity.update(id, updatedFields);
   }
@@ -81,6 +83,7 @@ export class BaseRepository<
   ): Promise<UpdateResult> {
     const updatedFields = {
       deletedAt: Date.now(),
+      deletedBy: RequestContext.getMemberIdFromRequest(),
     } as unknown as QueryDeepPartialEntity<T>;
     return await this.entity.update(condition, updatedFields);
   }
@@ -92,6 +95,7 @@ export class BaseRepository<
     const updateOverridden = {
       ...update,
       updatedAt: Date.now(),
+      updatedBy: RequestContext.getMemberIdFromRequest(),
     };
     return await this.entity.update(id, updateOverridden);
   }
@@ -103,6 +107,7 @@ export class BaseRepository<
     const updateOverridden = {
       ...update,
       updatedAt: Date.now(),
+      updatedBy: RequestContext.getMemberIdFromRequest(),
     };
     return await this.entity.update(condition, updateOverridden);
   }

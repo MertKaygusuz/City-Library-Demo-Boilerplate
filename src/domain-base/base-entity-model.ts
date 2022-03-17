@@ -1,13 +1,5 @@
-import {
-  BeforeInsert,
-  BeforeUpdate,
-  ChildEntity,
-  Column,
-  Index,
-  ObjectID,
-  ObjectIdColumn,
-  PrimaryColumn,
-} from 'typeorm';
+import { RequestContext } from 'src/middlewares/request-context';
+import { BeforeInsert, Column, Index, ObjectID, ObjectIdColumn } from 'typeorm';
 
 export abstract class BaseEntityModel<T extends string | ObjectID> {
   @ObjectIdColumn()
@@ -35,5 +27,6 @@ export abstract class BaseEntityModel<T extends string | ObjectID> {
   beforeInsertActions() {
     this.isDeleted = false;
     this.createdAt = Date.now();
+    this.createdBy = RequestContext.getMemberIdFromRequest();
   }
 }
