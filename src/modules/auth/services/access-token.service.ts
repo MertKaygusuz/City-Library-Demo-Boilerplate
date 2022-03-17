@@ -1,7 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomString } from 'src/utils/functions/randoms';
-import { CreateTokenPayload } from '../dto/create-token.payload';
 import { CreateTokenResultDto } from '../dto/create-token-result.dto';
 import { CONTEXT } from '@nestjs/graphql';
 
@@ -12,7 +11,7 @@ export class AccessTokenService {
     @Inject(CONTEXT) private context,
   ) {}
 
-  public createToken(payload: CreateTokenPayload): CreateTokenResultDto {
+  public createToken(payload: any): CreateTokenResultDto {
     return new CreateTokenResultDto(
       this.createAccessToken(payload),
       this.createRefreshTokenKey(),
@@ -27,15 +26,8 @@ export class AccessTokenService {
     return randomString();
   };
 
-  public createAccessToken(payload: CreateTokenPayload) {
-    //re-mapping here. Otherwise jwt-sign craches.
-    const payloadForSignIn = {
-      fullName: payload.fullName,
-      memberId: payload.memberId,
-      memberName: payload.memberName,
-      roles: payload.roles,
-    };
-    return this.jwtService.sign(payloadForSignIn, {
+  public createAccessToken(payload: any) {
+    return this.jwtService.sign(payload, {
       issuer: process.env.TOKEN_ISSUER,
       audience: process.env.TOKEN_AUDIENCE,
       secret: process.env.TOKEN_SECURITY_KEY,

@@ -17,6 +17,8 @@ import { BookReservationsModule } from './modules/book-reservations/book-reserva
 import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { JwtModule } from '@nestjs/jwt';
+import { GqlAuthGuard } from './modules/auth/guards/gql-auth.guard';
+import { APP_GUARD } from '@nestjs/core';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -62,6 +64,12 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: GqlAuthGuard,
+    },
+  ],
 })
 export class AppModule {}

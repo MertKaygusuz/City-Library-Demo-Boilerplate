@@ -2,12 +2,17 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { MembersService } from './members.service';
 import { Member } from './entities/member.entity';
 import { RegistrationInput } from './dto/registration.input';
+import { AdminUpdateInput } from './dto/admin-update.input';
+import { SelfUpdateInput } from './dto/self-update.input';
+import { AuthRolesGuard } from '../auth/guards/auth-roles.guard';
+import { AllowAnonymous } from '../auth/decorators/allow-anonymous.decorator';
 
 @Resolver(() => Member)
 export class MembersResolver {
   constructor(private readonly membersService: MembersService) {}
 
   @Query(() => Member)
+  @AuthRolesGuard('Admin')
   async getMembersByMemberName(
     @Args('memberName', { type: () => String }) memberName: string,
   ): Promise<Member> {
@@ -15,6 +20,7 @@ export class MembersResolver {
   }
 
   @Query(() => Member)
+  @AuthRolesGuard('Admin')
   async getMembersByMemberId(
     @Args('memberId', { type: () => String }) memberId: string,
   ): Promise<Member> {
@@ -22,6 +28,7 @@ export class MembersResolver {
   }
 
   @Mutation(() => String)
+  @AllowAnonymous()
   async register(
     @Args('registrationInput') registrationInput: RegistrationInput,
   ): Promise<string> {
@@ -29,10 +36,19 @@ export class MembersResolver {
   }
 
   @Mutation(() => Boolean)
-  async adminUpdateMember(
-    @Args('registrationInput') registrationInput: RegistrationInput,
+  async memberSelfUpdate(
+    @Args('memberSelfUpdateInput') memberSelfUpdateInput: SelfUpdateInput,
   ) {
-    await this.membersService.adminUpdateMember(registrationInput);
+    await this.membersService.memberSelfUpdate(memberSelfUpdateInput);
+    return true;
+  }
+
+  @Mutation(() => Boolean)
+  @AuthRolesGuard('Admin')
+  async adminUpdateMember(
+    @Args('adminUpdateInput') adminUpdateInput: AdminUpdateInput,
+  ) {
+    await this.membersService.adminUpdateMember(adminUpdateInput);
     return true;
   }
 }

@@ -2,7 +2,6 @@ import { Logger, Injectable, BadRequestException } from '@nestjs/common';
 import { Member } from 'src/modules/members/entities/member.entity';
 import { MembersService } from 'src/modules/members/members.service';
 import { checkPasswordHash } from 'src/utils/functions/password-related';
-import { CreateTokenPayload } from '../dto/create-token.payload';
 import { LoginInput } from '../dto/login.input';
 import { TokenReponseDto } from '../dto/token.response.dto';
 import { RefreshToken } from '../entities/cache/refresh-token';
@@ -29,14 +28,12 @@ export class AuthService {
 
     const roleNames = member.roles.map((x) => x.roleName);
 
-    const token = this.accessTokenService.createToken(
-      new CreateTokenPayload(
-        member.memberId,
-        member.memberName,
-        member.fullName,
-        roleNames,
-      ),
-    );
+    const token = this.accessTokenService.createToken({
+      memberId: member.memberId,
+      memberName: member.memberName,
+      fullName: member.fullName,
+      roles: roleNames,
+    });
 
     const refreshToken: RefreshToken = {
       tokenKey: token.refreshToken,
@@ -51,7 +48,7 @@ export class AuthService {
     await this.refreshTokenService.createOrUpdate(refreshToken);
 
     this.logger.log(
-      `Login was executed successfully. 
+      `[AuthService -> login] Login was executed successfully. 
        MemberName: ${member.memberName}, 
        MemberId: ${member.memberId}, 
        IP: ${token.clientIp}, 
@@ -73,14 +70,12 @@ export class AuthService {
     if (!oldToken)
       throw new BadRequestException('Refresh token could not be found!');
 
-    const newToken = this.accessTokenService.createToken(
-      new CreateTokenPayload(
-        oldToken.memberId,
-        oldToken.memberName,
-        oldToken.fullName,
-        oldToken.memberRoleNames,
-      ),
-    );
+    const newToken = this.accessTokenService.createToken({
+      memberId: oldToken.memberId,
+      memberName: oldToken.memberName,
+      fullName: oldToken.fullName,
+      roles: oldToken.memberRoleNames,
+    });
 
     const newRefreshToken: RefreshToken = {
       tokenKey: newToken.refreshToken,
@@ -98,7 +93,7 @@ export class AuthService {
     ]);
 
     this.logger.log(
-      `Refresh login was executed successfully. 
+      `[AuthService -> refreshLogin] Refresh login was executed successfully. 
        MemberName: ${oldToken.memberName}, 
        MemberId: ${oldToken.memberId}, 
        IP: ${newToken.clientIp}, 

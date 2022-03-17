@@ -102,6 +102,16 @@ export class AppService {
         createdAt: dateNow,
         isDeleted: false,
       } as Member,
+      {
+        memberName: 'User4',
+        fullName: 'Ömür Törpüsü',
+        birthDate: addYearsToEpochTime(dateNow, -50),
+        address: "Ömür's address",
+        password: hashedPassword,
+        roles: [role2],
+        createdAt: dateNow,
+        isDeleted: false,
+      } as Member,
     ];
 
     await this.membersRepo.insertMany(members);

@@ -1,4 +1,5 @@
 import { Resolver, Query, Args, Parent, ResolveField } from '@nestjs/graphql';
+import { AuthRolesGuard } from '../auth/guards/auth-roles.guard';
 import { BooksService } from '../books/books.service';
 import { Book } from '../books/entities/book.entity';
 import { Member } from '../members/entities/member.entity';
@@ -7,6 +8,7 @@ import { BookReservationsService } from './book-reservations.service';
 import { ReservationHistoryResponseDto } from './dto/reservation-history.response.dto';
 
 @Resolver(() => ReservationHistoryResponseDto)
+@AuthRolesGuard('Admin')
 export class BookReservationHistoriesResolver {
   constructor(
     private readonly bookReservationsService: BookReservationsService,

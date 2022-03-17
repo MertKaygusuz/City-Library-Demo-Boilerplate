@@ -7,6 +7,7 @@ import {
   Float,
   Mutation,
 } from '@nestjs/graphql';
+import { AuthRolesGuard } from '../auth/guards/auth-roles.guard';
 import { BooksService } from '../books/books.service';
 import { Book } from '../books/entities/book.entity';
 import { Member } from '../members/entities/member.entity';
@@ -18,6 +19,7 @@ import { AssigningBookInput } from './dto/assigning-book.input';
 import { NumberOfBooksReservedByMembersResponseDto } from './dto/number-of-books-reserved-by-members.response.dto';
 
 @Resolver(() => ActiveBookReservationsResponseDto)
+@AuthRolesGuard('Admin')
 export class ActiveBookReservationsResolver {
   constructor(
     private readonly bookReservationsService: BookReservationsService,

@@ -90,7 +90,8 @@ input ActiveBookReservationsFilterInput {
 
 type Mutation {
   register(registrationInput: RegistrationInput!): String!
-  adminUpdateMember(registrationInput: RegistrationInput!): Boolean!
+  memberSelfUpdate(memberSelfUpdateInput: SelfUpdateInput!): Boolean!
+  adminUpdateMember(adminUpdateInput: AdminUpdateInput!): Boolean!
   createBook(registerBookInput: RegisterBookInput!): String!
   updateBook(updateBookInput: UpdateBookInput!): Boolean!
 
@@ -111,9 +112,28 @@ input RegistrationInput {
   fullName: String!
 
   """Birth date in epoch milliseconds"""
-  birthDate: Int!
+  birthDate: Float!
   address: String!
   password: String!
+}
+
+"""contains member update info"""
+input SelfUpdateInput {
+  fullName: String!
+
+  """Birth date in epoch milliseconds"""
+  birthDate: Float!
+  address: String!
+}
+
+"""contains member update info"""
+input AdminUpdateInput {
+  memberName: String!
+  fullName: String!
+
+  """Birth date in epoch milliseconds"""
+  birthDate: Float!
+  address: String!
 }
 
 input RegisterBookInput {
@@ -121,11 +141,11 @@ input RegisterBookInput {
   bookTitle: String!
 
   """Publish date in epoch milliseconds"""
-  firstPublishDate: Int!
+  firstPublishDate: Float!
   editionNumber: Int!
 
   """Edition date in epoch milliseconds"""
-  editionDate: Int!
+  editionDate: Float!
   titleType: Int!
   coverType: Int!
   availableCount: Int!
@@ -136,11 +156,11 @@ input UpdateBookInput {
   bookTitle: String
 
   """Publish date in epoch milliseconds"""
-  firstPublishDate: Int
+  firstPublishDate: Float
   editionNumber: Int
 
   """Edition date in epoch milliseconds"""
-  editionDate: Int
+  editionDate: Float
   titleType: Int
   coverType: Int
   availableCount: Int

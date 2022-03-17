@@ -1,9 +1,11 @@
 import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { AllowAnonymous } from './decorators/allow-anonymous.decorator';
 import { LoginInput } from './dto/login.input';
 import { TokenReponseDto } from './dto/token.response.dto';
 import { AuthService } from './services/auth.service';
 
 @Resolver(() => TokenReponseDto)
+@AllowAnonymous()
 export class AuthResolver {
   constructor(private readonly authService: AuthService) {}
 

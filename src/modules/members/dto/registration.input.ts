@@ -1,4 +1,4 @@
-import { Field, InputType, Int } from '@nestjs/graphql';
+import { Field, Float, InputType } from '@nestjs/graphql';
 import { MinLength } from 'class-validator';
 
 @InputType()
@@ -11,7 +11,7 @@ export class RegistrationInput {
     nullable: false,
   })
   fullName: string;
-  @Field(() => Int, {
+  @Field(() => Float, {
     description: 'Birth date in epoch milliseconds',
     nullable: false,
   })

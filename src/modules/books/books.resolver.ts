@@ -4,8 +4,10 @@ import { Book } from './entities/book.entity';
 import { UpdateBookInput } from './dto/update-book.input';
 import { RegisterBookInput } from './dto/register-book.input';
 import { TotalAvailableCountsPerTitleEndEditionNumberResponseDto } from './dto/total-available-counts-per-title-end-edition-number.response.dto';
+import { AuthRolesGuard } from '../auth/guards/auth-roles.guard';
 
 @Resolver(() => Book)
+@AuthRolesGuard('Admin')
 export class BooksResolver {
   constructor(private readonly booksService: BooksService) {}
 

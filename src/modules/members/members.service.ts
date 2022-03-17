@@ -6,6 +6,9 @@ import { Member } from './entities/member.entity';
 import { RegistrationInput } from './dto/registration.input';
 import { createPasswordHash } from 'src/utils/functions/password-related';
 import { ObjectID } from 'mongodb';
+import { CONTEXT } from '@nestjs/graphql';
+import { AdminUpdateInput } from './dto/admin-update.input';
+import { SelfUpdateInput } from './dto/self-update.input';
 @Injectable()
 export class MembersService {
   defaultRoleNameList = ['User'];
@@ -14,6 +17,7 @@ export class MembersService {
     private readonly membersRepo: IMembersRepo,
     @Inject(Role_Repo)
     private readonly rolesRepo: IRolesRepo,
+    @Inject(CONTEXT) private readonly context,
   ) {}
 
   async doesMemberExist(memberId: string): Promise<boolean> {
@@ -59,14 +63,27 @@ export class MembersService {
     return newMember._id;
   }
 
-  async adminUpdateMember(registrationInput: RegistrationInput) {
+  async memberSelfUpdate(memberSelfUpdateInput: SelfUpdateInput) {
+    const memberName = this.context.req?.user?.memberName;
+    if (!memberName) throw new NotFoundException('Member could not be found!');
+    const adminUpdateInput: AdminUpdateInput = {
+      memberName: memberName,
+      fullName: memberSelfUpdateInput.fullName,
+      birthDate: memberSelfUpdateInput.birthDate,
+      address: memberSelfUpdateInput.address,
+    };
+
+    await this.adminUpdateMember(adminUpdateInput);
+  }
+
+  async adminUpdateMember(adminUpdateInput: AdminUpdateInput) {
     const memberNameKey = nameof<Member>((x) => x.memberName);
     const updateResult = await this.membersRepo.update(
-      { [memberNameKey]: registrationInput.memberName },
+      { [memberNameKey]: adminUpdateInput.memberName },
       {
-        fullName: registrationInput.fullName,
-        birthDate: registrationInput.birthDate,
-        address: registrationInput.address,
+        fullName: adminUpdateInput.fullName,
+        birthDate: adminUpdateInput.birthDate,
+        address: adminUpdateInput.address,
       },
     );
 
