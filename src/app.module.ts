@@ -17,8 +17,9 @@ import { BookReservationsModule } from './modules/book-reservations/book-reserva
 import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { GqlAuthGuard } from './modules/auth/guards/gql-auth.guard';
-import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters/global-exception-filter';
+import { GlobalLoggingInterceptor } from './interceptors/global-logging-interceptor';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -72,6 +73,10 @@ import { GlobalExceptionFilter } from './filters/global-exception-filter';
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: GlobalLoggingInterceptor,
     },
   ],
 })

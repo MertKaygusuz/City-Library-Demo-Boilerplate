@@ -43,6 +43,12 @@ export class GlobalExceptionFilter implements GqlExceptionFilter {
   }
 
   catch(exceptions: unknown, host: ArgumentsHost): any {
+    //if request is REST
+    const ctx = host.switchToHttp();
+    const request = ctx.getRequest<Request>();
+    if (request) return exceptions;
+    //TODO: rest request handling
+
     const clientIp = RequestContext.getClientIpFromRequest();
     const userAgent = RequestContext.getUserAgentFromRequestHeader();
     const memberId = RequestContext.getMemberIdFromRequest();

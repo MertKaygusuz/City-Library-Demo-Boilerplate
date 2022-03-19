@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
+import { AllowAnonymous } from './modules/auth/decorators/allow-anonymous.decorator';
 
 @Controller()
+@AllowAnonymous()
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
