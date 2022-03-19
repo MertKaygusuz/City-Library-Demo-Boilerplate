@@ -11,14 +11,23 @@ import { AuthRolesGuard } from '../auth/guards/auth-roles.guard';
 export class BooksResolver {
   constructor(private readonly booksService: BooksService) {}
 
-  @Mutation(() => String)
-  createBook(@Args('registerBookInput') registerBookInput: RegisterBookInput) {
-    return this.booksService.create(registerBookInput);
+  @Mutation(() => String, { description: 'returns registered book id' })
+  async createBook(
+    @Args('registerBookInput') registerBookInput: RegisterBookInput,
+  ): Promise<string> {
+    return await this.booksService.create(registerBookInput);
+  }
+
+  @Query(() => Boolean, {
+    description: 'this is fake query for custom error exception handling test.',
+  })
+  customErrorExampleInBookService() {
+    return this.booksService.customErrorExampleInBookService();
   }
 
   @Query(() => [Book], { name: 'books' })
-  findAll() {
-    return this.booksService.findAll();
+  async findAll(): Promise<Book[]> {
+    return await this.booksService.findAll();
   }
 
   @Query(() => [TotalAvailableCountsPerTitleEndEditionNumberResponseDto])
@@ -49,8 +58,9 @@ export class BooksResolver {
   @Mutation(() => Boolean, {
     description: 'Soft delete operation for book records',
   })
-  removeBook(@Args('id', { type: () => String }) id: string) {
-    this.booksService.remove(id);
-    return true;
+  async removeBook(
+    @Args('id', { type: () => String }) id: string,
+  ): Promise<boolean> {
+    return await this.booksService.remove(id);
   }
 }

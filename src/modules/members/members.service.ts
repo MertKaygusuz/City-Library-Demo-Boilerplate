@@ -78,7 +78,7 @@ export class MembersService {
 
   async adminUpdateMember(adminUpdateInput: AdminUpdateInput) {
     const memberNameKey = nameof<Member>((x) => x.memberName);
-    const updateResult = await this.membersRepo.update(
+    const updatedCount = await this.membersRepo.update(
       { [memberNameKey]: adminUpdateInput.memberName },
       {
         fullName: adminUpdateInput.fullName,
@@ -87,7 +87,7 @@ export class MembersService {
       },
     );
 
-    if (!updateResult.affected)
+    if (!updatedCount)
       throw new NotFoundException('Member could not be found!');
   }
 }

@@ -73,6 +73,9 @@ type TokenReponseDto {
 type Query {
   getMembersByMemberName(memberName: String!): Member!
   getMembersByMemberId(memberId: String!): Member!
+
+  """this is fake query for custom error exception handling test."""
+  customErrorExampleInBookService: Boolean!
   books: [Book!]!
   getNumberOfBooksPerTitleAndEditionNumber: [TotalAvailableCountsPerTitleEndEditionNumberResponseDto!]!
   getDistinctBookTitleNumber: Int!
@@ -92,6 +95,8 @@ type Mutation {
   register(registrationInput: RegistrationInput!): String!
   memberSelfUpdate(memberSelfUpdateInput: SelfUpdateInput!): Boolean!
   adminUpdateMember(adminUpdateInput: AdminUpdateInput!): Boolean!
+
+  """returns registered book id"""
   createBook(registerBookInput: RegisterBookInput!): String!
   updateBook(updateBookInput: UpdateBookInput!): Boolean!
 

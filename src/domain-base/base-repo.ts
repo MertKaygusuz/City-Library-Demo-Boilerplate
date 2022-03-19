@@ -6,7 +6,6 @@ import {
   FindManyOptions,
   ObjectID,
   Repository,
-  UpdateResult,
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { BaseEntityModel } from './base-entity-model';
@@ -62,53 +61,60 @@ export class BaseRepository<
     return await this.entity.findAndCount(relations);
   }
 
-  public async deleteById(id: S): Promise<DeleteResult> {
-    return await this.entity.delete(id);
+  public async deleteById(id: S): Promise<number> {
+    const { affected } = await this.entity.delete(id);
+    return affected ?? 0;
   }
 
-  public async delete(condition: FindConditions<T>): Promise<DeleteResult> {
-    return await this.entity.delete(condition);
+  public async delete(condition: FindConditions<T>): Promise<number> {
+    const { affected } = await this.entity.delete(condition);
+    return affected ?? 0;
   }
 
-  public async deleteByIdSoftly(id: S): Promise<UpdateResult> {
+  public async deleteByIdSoftly(id: S): Promise<number> {
     const updatedFields = {
       deletedAt: Date.now(),
       deletedBy: RequestContext.getMemberIdFromRequest(),
     } as unknown as QueryDeepPartialEntity<T>;
-    return await this.entity.update(id, updatedFields);
+    const { affected } = await this.entity.update(id, updatedFields);
+    return affected ?? 0;
   }
 
-  public async deleteSoftly(
-    condition: FindConditions<T>,
-  ): Promise<UpdateResult> {
+  public async deleteSoftly(condition: FindConditions<T>): Promise<number> {
     const updatedFields = {
       deletedAt: Date.now(),
       deletedBy: RequestContext.getMemberIdFromRequest(),
     } as unknown as QueryDeepPartialEntity<T>;
-    return await this.entity.update(condition, updatedFields);
+
+    const { affected } = await this.entity.update(condition, updatedFields);
+    return affected ?? 0;
   }
 
   public async updateById(
     id: S,
     update: QueryDeepPartialEntity<T>,
-  ): Promise<UpdateResult> {
+  ): Promise<number> {
     const updateOverridden = {
       ...update,
       updatedAt: Date.now(),
       updatedBy: RequestContext.getMemberIdFromRequest(),
     };
-    return await this.entity.update(id, updateOverridden);
+
+    const { affected } = await this.entity.update(id, updateOverridden);
+    return affected ?? 0;
   }
 
   public async update(
     condition: FindConditions<T>,
     update: QueryDeepPartialEntity<T>,
-  ): Promise<UpdateResult> {
+  ): Promise<number> {
     const updateOverridden = {
       ...update,
       updatedAt: Date.now(),
       updatedBy: RequestContext.getMemberIdFromRequest(),
     };
-    return await this.entity.update(condition, updateOverridden);
+
+    const { affected } = await this.entity.update(condition, updateOverridden);
+    return affected ?? 0;
   }
 }

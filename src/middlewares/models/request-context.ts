@@ -47,4 +47,9 @@ export class RequestContext {
     const requestContext = RequestContext.currentRequestContext();
     return requestContext.request.headers['user-agent'];
   }
+
+  public static getClientIpFromRequest(): string {
+    const requestContext = RequestContext.currentRequestContext();
+    return requestContext.request?.['ip'];
+  }
 }

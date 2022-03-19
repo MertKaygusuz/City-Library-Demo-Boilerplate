@@ -11,23 +11,10 @@ export class ValidationFilter implements ExternalExceptionFilter {
       return null;
     }
 
-    const error = new ApolloError(
-      'See the exception Info',
-      //exceptions.getStatus().toString(),
-      '400',
-    );
+    const error = new ApolloError('See the exception Info', '400');
 
-    //error.stack = exceptions.stack;
-    //error.extensions['response'] = exceptions.getResponse();
     error.extensions['exceptionInfo'] = exceptions;
 
     return error;
-    // const ctx = host.switchToHttp();
-    // const response = ctx.getResponse();
-    // return response.status(400).json({
-    //   statusCode: 400,
-    //   exceptionInfo: exceptions,
-    //   error: 'Bad Request',
-    // });
   }
 }

@@ -16,11 +16,9 @@ import { Role } from './modules/members/entities/role.entity';
 import { BookReservationsModule } from './modules/book-reservations/book-reservations.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
-import { JwtModule } from '@nestjs/jwt';
 import { GqlAuthGuard } from './modules/auth/guards/gql-auth.guard';
 import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters/global-exception-filter';
-import { GraphQLError, GraphQLFormattedError } from 'graphql';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,15 +29,14 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       debug: true,
       playground: true,
+      formatError: (error) => {
+        return {
+          message: error?.message,
+          code: error?.extensions?.['code'],
+          exceptionInfo: error?.extensions?.['exceptionInfo'],
+        };
+      },
     }),
-    // JwtModule.register({
-    //   secret: process.env.TOKEN_SECURITY_KEY,
-    //   signOptions: {
-    //     expiresIn: process.env.ACCESS_TOKEN_EXPIRATION,
-    //     issuer: process.env.TOKEN_ISSUER,
-    //     audience: process.env.TOKEN_AUDIENCE,
-    //   },
-    // }),
     RedisModule.forRootAsync({
       useFactory: () => ({
         config: {

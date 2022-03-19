@@ -4,10 +4,6 @@ import {
   FindConditions,
   FindManyOptions,
   ObjectID,
-  ObjectLiteral,
-  ReplaceOneOptions,
-  UpdateResult,
-  UpdateWriteOpResult,
 } from 'typeorm';
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
 import { BaseEntityModel } from './base-entity-model';
@@ -38,18 +34,18 @@ export interface IBaseRepository<
     relations: FindConditions<T>,
   ): Promise<[T[], number]>;
 
-  deleteById(id: S): Promise<DeleteResult>;
+  deleteById(id: S): Promise<number>;
 
-  delete(condition: FindConditions<T>): Promise<DeleteResult>;
+  delete(condition: FindConditions<T>): Promise<number>;
 
-  deleteByIdSoftly(id: S): Promise<UpdateResult>;
+  deleteByIdSoftly(id: S): Promise<number>;
 
-  deleteSoftly(condition: FindConditions<T>): Promise<UpdateResult>;
+  deleteSoftly(condition: FindConditions<T>): Promise<number>;
 
-  updateById(id: S, update: QueryDeepPartialEntity<T>): Promise<UpdateResult>;
+  updateById(id: S, update: QueryDeepPartialEntity<T>): Promise<number>;
 
   update(
     condition: FindConditions<T>,
     update: QueryDeepPartialEntity<T>,
-  ): Promise<UpdateResult>;
+  ): Promise<number>;
 }

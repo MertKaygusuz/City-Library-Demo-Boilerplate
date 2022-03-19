@@ -15,6 +15,5 @@ export class SelfUpdateInput {
   @Field(() => String, {
     nullable: false,
   })
-  @IsInt()
   address: string;
 }

@@ -1,23 +1,14 @@
 import {
   BadRequestException,
-  HttpException,
   Inject,
   Injectable,
   NotFoundException,
-  UseFilters,
 } from '@nestjs/common';
-import { UserInputError } from 'apollo-server-express';
 import { ObjectID } from 'mongodb';
-import { GlobalExceptionFilter } from 'src/filters/global-exception-filter';
 import {
   CustomException,
   CustomExceptionBase,
 } from 'src/filters/models/custom-exception';
-import {
-  ValidationExceptionBase,
-  ValidationExceptions,
-} from 'src/filters/models/validation-exception';
-import { ValidationFilter } from 'src/filters/validation-filter';
 import { nameof } from 'ts-simple-nameof';
 import { Book_Repo, IBooksRepo } from './domain/books.interface.repo';
 import { RegisterBookInput } from './dto/register-book.input';
@@ -83,25 +74,14 @@ export class BooksService {
 
   async update(updateBookInput: UpdateBookInput) {
     const { id, ...updatedFields } = updateBookInput;
-    const updateResult = await this.booksRepo.updateById(id, updatedFields);
+    const updatedCount = await this.booksRepo.updateById(id, updatedFields);
 
-    if (!updateResult.affected)
-      throw new NotFoundException('Book could not be found!');
+    if (!updatedCount) throw new NotFoundException('Book could not be found!');
   }
 
   async remove(id: string) {
-    // const error = new CustomExceptionBase(['Book could not be found!']);
-    // throw new CustomException([error], '404');
-    throw new BadRequestException('Book could not be found!');
-    //throw new HttpException('f', 400);
-    //throw new Error('abc');
-    const updateResult = await this.booksRepo.deleteById(id);
-    //throw new BadRequestException('Book could not be found!');
-    //return new UserInputError('mee');
-    if (!updateResult.affected) {
-      const error = new CustomExceptionBase(['Book could not be found!']);
-      throw new CustomException([error], '404');
-    }
+    await this.booksRepo.deleteByIdSoftly(id);
+    return true;
   }
 
   async getDistinctBookTitleNumber() {
@@ -127,5 +107,15 @@ export class BooksService {
     const rawResult =
       await this.booksRepo.getNumberOfBooksPerTitleAndEditionNumber();
     return rawResult as TotalAvailableCountsPerTitleEndEditionNumberResponseDto[];
+  }
+
+  customErrorExampleInBookService(): boolean {
+    const error = new CustomExceptionBase(
+      ['Book could not be found!'],
+      'fake property (optional)',
+      'fake value (optional)',
+    );
+    throw new CustomException([error], '400');
+    return true;
   }
 }
