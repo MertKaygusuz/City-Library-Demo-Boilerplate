@@ -18,7 +18,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { RedisModule } from '@liaoliaots/nestjs-redis';
 import { JwtModule } from '@nestjs/jwt';
 import { GqlAuthGuard } from './modules/auth/guards/gql-auth.guard';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { GlobalExceptionFilter } from './filters/global-exception-filter';
+import { GraphQLError, GraphQLFormattedError } from 'graphql';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -69,6 +71,10 @@ import { APP_GUARD } from '@nestjs/core';
     {
       provide: APP_GUARD,
       useClass: GqlAuthGuard,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
     },
   ],
 })

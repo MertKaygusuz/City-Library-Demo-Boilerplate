@@ -1,4 +1,4 @@
-import { RequestContext } from 'src/middlewares/request-context';
+import { RequestContext } from 'src/middlewares/models/request-context';
 import {
   DeepPartial,
   DeleteResult,

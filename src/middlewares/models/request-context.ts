@@ -23,6 +23,11 @@ export class RequestContext {
     return requestContext.request;
   }
 
+  public static currentResponse(): Response {
+    const requestContext = RequestContext.currentRequestContext();
+    return requestContext.response;
+  }
+
   public static currentUser() {
     const requestContext = RequestContext.currentRequestContext();
     return requestContext.request['user'];
@@ -36,5 +41,10 @@ export class RequestContext {
   public static getMemberNameFromRequest(): string {
     const requestContext = RequestContext.currentRequestContext();
     return requestContext.request['user']?.memberName;
+  }
+
+  public static getUserAgentFromRequestHeader(): string {
+    const requestContext = RequestContext.currentRequestContext();
+    return requestContext.request.headers['user-agent'];
   }
 }

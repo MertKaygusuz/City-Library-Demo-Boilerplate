@@ -1,4 +1,5 @@
 import { InputType, Field, Float } from '@nestjs/graphql';
+import { IsInt } from 'class-validator';
 
 @InputType({ description: 'contains member update info' })
 export class AdminUpdateInput {
@@ -14,6 +15,7 @@ export class AdminUpdateInput {
     description: 'Birth date in epoch milliseconds',
     nullable: false,
   })
+  @IsInt()
   birthDate: number;
   @Field(() => String, {
     nullable: false,

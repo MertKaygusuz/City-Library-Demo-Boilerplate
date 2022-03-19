@@ -1,5 +1,5 @@
 import { Field, Float, InputType, Int } from '@nestjs/graphql';
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsInt } from 'class-validator';
 import { BookCoverTypes } from 'src/common/enums/book-cover-types';
 import { BookTitleTypes } from 'src/common/enums/book-title-types';
 
@@ -17,6 +17,7 @@ export class RegisterBookInput {
     description: 'Publish date in epoch milliseconds',
     nullable: false,
   })
+  @IsInt()
   firstPublishDate: number;
   @Field(() => Int, {
     nullable: false,
@@ -26,6 +27,7 @@ export class RegisterBookInput {
     description: 'Edition date in epoch milliseconds',
     nullable: false,
   })
+  @IsInt()
   editionDate: number;
   @Field(() => Int, {
     nullable: false,

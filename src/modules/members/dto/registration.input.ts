@@ -1,5 +1,5 @@
 import { Field, Float, InputType } from '@nestjs/graphql';
-import { MinLength } from 'class-validator';
+import { IsInt, MinLength } from 'class-validator';
 
 @InputType()
 export class RegistrationInput {
@@ -15,6 +15,7 @@ export class RegistrationInput {
     description: 'Birth date in epoch milliseconds',
     nullable: false,
   })
+  @IsInt()
   birthDate: number;
   @Field(() => String, {
     nullable: false,
