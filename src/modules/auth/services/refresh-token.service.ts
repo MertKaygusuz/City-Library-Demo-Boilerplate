@@ -6,7 +6,7 @@ import { RefreshToken } from '../entities/cache/refresh-token';
 @Injectable({ scope: Scope.REQUEST })
 export class RefreshTokenService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
-  expireTimeInSecods: number =
+  expireTimeInSeconds: number =
     3600 * parseInt(process.env.REFRESH_TOKEN_EXPIRATION);
   redisCachePrefix: string = process.env.REDIS_INSTANCE_NAME;
 
@@ -15,7 +15,7 @@ export class RefreshTokenService {
       this.redisCachePrefix + token.tokenKey,
       JSON.stringify(token),
       'EX',
-      this.expireTimeInSecods,
+      this.expireTimeInSeconds,
     );
   }
 

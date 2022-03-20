@@ -17,7 +17,7 @@ export class RegisterBookInput {
     description: 'Publish date in epoch milliseconds',
     nullable: false,
   })
-  @IsInt()
+  @IsInt({ message: 'validation-error.DATE' })
   firstPublishDate: number;
   @Field(() => Int, {
     nullable: false,
@@ -27,17 +27,17 @@ export class RegisterBookInput {
     description: 'Edition date in epoch milliseconds',
     nullable: false,
   })
-  @IsInt()
+  @IsInt({ message: 'validation-error.DATE' })
   editionDate: number;
   @Field(() => Int, {
     nullable: false,
   })
-  @IsEnum(BookTitleTypes)
+  @IsEnum(BookTitleTypes, { message: 'validation-error.BOOK_TITLE_TYPE' })
   titleType: BookTitleTypes;
   @Field(() => Int, {
     nullable: false,
   })
-  @IsEnum(BookCoverTypes)
+  @IsEnum(BookCoverTypes, { message: 'validation-error.BOOK_COVER_TYPE' })
   coverType: BookCoverTypes;
   @Field(() => Int, {
     nullable: false,

@@ -44,7 +44,11 @@ type ActiveBookReservationsResponseDto {
   availableAt: Float!
   memberId: String!
   bookId: String!
+
+  """resolves book field dynamically for active book reservations"""
   getBookInfo: Book!
+
+  """resolves member field dynamically for active book reservations"""
   getMemberInfo: Member!
 }
 
@@ -61,7 +65,11 @@ type ReservationHistoryResponseDto {
   returnDate: Float!
   memberId: String!
   bookId: String!
+
+  """resolves book field dynamically for reservation histories"""
   getBookInfo: Book!
+
+  """resolves member field dynamically for reservation histories"""
   getMemberInfo: Member!
 }
 
@@ -79,8 +87,16 @@ type Query {
   books: [Book!]!
   getNumberOfBooksPerTitleAndEditionNumber: [TotalAvailableCountsPerTitleEndEditionNumberResponseDto!]!
   getDistinctBookTitleNumber: Int!
+
+  """
+  returns active book reservations using filter including memberId and bookId.
+  """
   getAllActiveBookReservations(activeBookReservationsFilterInput: ActiveBookReservationsFilterInput!): [ActiveBookReservationsResponseDto!]!
   getNumberOfBooksReservedPerMembers: [NumberOfBooksReservedByMembersResponseDto!]!
+
+  """
+  returns estimated return dates in epoch ms with respect to given bookId
+  """
   getReservedBooksEstimatedReturnDates(bookId: String!): [Float!]!
   getReservationHistoriesByBookId(bookId: String!): [ReservationHistoryResponseDto!]!
   getReservationHistoriesByMemberId(memberId: String!): [ReservationHistoryResponseDto!]!
@@ -92,8 +108,13 @@ input ActiveBookReservationsFilterInput {
 }
 
 type Mutation {
+  """registers new member to system"""
   register(registrationInput: RegistrationInput!): String!
+
+  """members can update their own info except password and roles."""
   memberSelfUpdate(memberSelfUpdateInput: SelfUpdateInput!): Boolean!
+
+  """Admin can update any member's info except password and roles."""
   adminUpdateMember(adminUpdateInput: AdminUpdateInput!): Boolean!
 
   """returns registered book id"""
@@ -108,7 +129,11 @@ type Mutation {
   assignBookToMember(assigningBookInput: AssigningBookInput!): Boolean!
   unAssignBookToMember(assigningBookInput: AssigningBookInput!): Boolean!
   login(loginInput: LoginInput!): TokenReponseDto!
+
+  """returns new token if refresh token exists on cache"""
   refrehLogin(tokenKey: String!): TokenReponseDto!
+
+  """deletes refresh token from cache"""
   logout(tokenKey: String!): Boolean!
 }
 
