@@ -16,14 +16,16 @@ export class AuthResolver {
     return this.authService.login(loginInput);
   }
 
-  @Mutation(() => TokenReponseDto)
+  @Mutation(() => TokenReponseDto, {
+    description: 'returns new token if refresh token exists on cache',
+  })
   async refrehLogin(
     @Args('tokenKey', { type: () => String, nullable: false }) tokenKey: string,
   ): Promise<TokenReponseDto> {
     return this.authService.refreshLogin(tokenKey);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, { description: 'deletes refresh token from cache' })
   async logout(
     @Args('tokenKey', { type: () => String, nullable: false }) tokenKey: string,
   ): Promise<boolean> {

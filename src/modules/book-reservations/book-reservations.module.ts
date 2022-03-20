@@ -33,6 +33,6 @@ import { BookReservationHistoriesResolver } from './book-reservation-histories.r
     BookReservationHistoriesResolver,
     BookReservationsService,
   ],
-  exports: [Book_Reservation_Histories_Repo, Active_Reservations_Repo],
+  exports: [Book_Reservation_Histories_Repo, Active_Reservations_Repo], //exporting repos for seeding in app controller
 })
 export class BookReservationsModule {}

@@ -1,7 +1,6 @@
 import { RequestContext } from 'src/middlewares/models/request-context';
 import {
   DeepPartial,
-  DeleteResult,
   FindConditions,
   FindManyOptions,
   ObjectID,

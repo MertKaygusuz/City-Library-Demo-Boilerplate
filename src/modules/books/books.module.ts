@@ -17,6 +17,6 @@ import { Book_Repo } from './domain/books.interface.repo';
     BooksResolver,
     BooksService,
   ],
-  exports: [Book_Repo, BooksService],
+  exports: [Book_Repo, BooksService], //exporting repos for seeding in app controller
 })
 export class BooksModule {}

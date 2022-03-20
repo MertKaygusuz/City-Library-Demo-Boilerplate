@@ -1,6 +1,5 @@
 import {
   DeepPartial,
-  DeleteResult,
   FindConditions,
   FindManyOptions,
   ObjectID,

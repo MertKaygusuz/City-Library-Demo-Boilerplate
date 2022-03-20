@@ -48,7 +48,9 @@ export class AppService {
   ) {}
 
   getHello(): string {
-    return 'Hello World!';
+    return `Welcome to City Library Demo project!
+    If you have not any data in your database, you could seed via get request /seed-data and delete all data /delete-all-data.
+    In order for trying the actions, use /graphql.`;
   }
 
   async seedData() {

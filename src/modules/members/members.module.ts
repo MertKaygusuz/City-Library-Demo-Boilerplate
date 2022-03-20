@@ -24,6 +24,6 @@ import { RolesRepo } from './domain/roles.repo';
     MembersResolver,
     MembersService,
   ],
-  exports: [Member_Repo, Role_Repo, MembersService],
+  exports: [Member_Repo, Role_Repo, MembersService], //exporting repos for seeding in app controller
 })
 export class MembersModule {}

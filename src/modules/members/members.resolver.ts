@@ -27,7 +27,7 @@ export class MembersResolver {
     return await this.membersService.getMembersByMemberId(memberId);
   }
 
-  @Mutation(() => String)
+  @Mutation(() => String, { description: 'registers new member to system' })
   @AllowAnonymous()
   async register(
     @Args('registrationInput') registrationInput: RegistrationInput,
@@ -35,7 +35,9 @@ export class MembersResolver {
     return await this.membersService.register(registrationInput);
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, {
+    description: 'members can update their own info except password and roles.',
+  })
   async memberSelfUpdate(
     @Args('memberSelfUpdateInput') memberSelfUpdateInput: SelfUpdateInput,
   ) {
@@ -43,7 +45,10 @@ export class MembersResolver {
     return true;
   }
 
-  @Mutation(() => Boolean)
+  @Mutation(() => Boolean, {
+    description:
+      "Admin can update any member's info except password and roles.",
+  })
   @AuthRolesGuard('Admin')
   async adminUpdateMember(
     @Args('adminUpdateInput') adminUpdateInput: AdminUpdateInput,

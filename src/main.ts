@@ -5,13 +5,11 @@ import {
   ValidationExceptions,
   ValidationExceptionBase,
 } from './filters/models/validation-exception';
-import { ValidationFilter } from './filters/validation-filter';
 import { RequestContextMiddleware } from './middlewares/request-context.middleware';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(RequestContextMiddleware);
-  //app.useGlobalFilters(new ValidationFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {

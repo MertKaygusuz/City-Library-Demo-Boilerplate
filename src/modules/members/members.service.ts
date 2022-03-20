@@ -41,17 +41,19 @@ export class MembersService {
       [memberNameKey]: memberName,
     });
     if (!result) await this.throwMemberNotFoundError();
+    result.password = null;
     return result;
   }
 
   async getMembersByMemberId(memberId: string): Promise<Member> {
     const result = await this.membersRepo.findOneById(memberId);
     if (!result) await this.throwMemberNotFoundError();
+    result.password = null;
     return result;
   }
 
   async register(registrationInput: RegistrationInput): Promise<string> {
-    //it is already handled by validation pipe
+    //it has been already handled by validation pipe
     const minimumPasswordLength = 8;
     if (registrationInput.password.length < minimumPasswordLength) {
       const errorMessage = await this.i18n.translate('error.PASSWORD_LENGTH', {

@@ -1,17 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import {
-  ArgumentsHost,
-  Catch,
-  ExceptionFilter,
-  HttpException,
-  Logger,
-} from '@nestjs/common';
-import { ExternalExceptionFilter } from '@nestjs/core/exceptions/external-exception-filter';
-import {
-  GqlArgumentsHost,
-  GqlContextType,
-  GqlExceptionFilter,
-} from '@nestjs/graphql';
+import { ArgumentsHost, Catch, HttpException, Logger } from '@nestjs/common';
+import { GqlArgumentsHost, GqlExceptionFilter } from '@nestjs/graphql';
 import { ApolloError } from 'apollo-server-errors';
 import { GraphQLResolveInfo } from 'graphql';
 import { RequestContext } from 'src/middlewares/models/request-context';
@@ -57,6 +46,7 @@ export class GlobalExceptionFilter implements GqlExceptionFilter {
     const { returnType, cacheControl, schema, ...requestInfo } =
       gqlHost.getInfo<GraphQLResolveInfo>();
     if (exceptions instanceof ValidationExceptions) {
+      //already handled by validation filter
       return;
     } else if (exceptions instanceof CustomException) {
       const { statusCode, ...errorArray } = exceptions;

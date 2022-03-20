@@ -34,14 +34,18 @@ export class BookReservationHistoriesResolver {
     );
   }
 
-  @ResolveField(() => Book)
+  @ResolveField(() => Book, {
+    description: 'resolves book field dynamically for reservation histories',
+  })
   async getBookInfo(
     @Parent() bookReservationHitory: ReservationHistoryResponseDto,
   ): Promise<Book> {
     return await this.booksService.getBookById(bookReservationHitory.bookId);
   }
 
-  @ResolveField(() => Member)
+  @ResolveField(() => Member, {
+    description: 'resolves member field dynamically for reservation histories',
+  })
   async getMemberInfo(
     @Parent() bookReservationHitory: ReservationHistoryResponseDto,
   ): Promise<Member> {

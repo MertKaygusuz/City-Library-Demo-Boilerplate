@@ -17,6 +17,7 @@ export class ValidationFilter implements ExternalExceptionFilter {
       return null;
     }
 
+    //i18n translations
     for await (const exc of exceptions.validationExceptions) {
       for (let i = 0; i < exc.validationErrors.length; i++) {
         exc.validationErrors[i] = await this.i18n.translate(

@@ -27,7 +27,10 @@ export class ActiveBookReservationsResolver {
     private readonly membersService: MembersService,
   ) {}
 
-  @Query(() => [ActiveBookReservationsResponseDto])
+  @Query(() => [ActiveBookReservationsResponseDto], {
+    description:
+      'returns active book reservations using filter including memberId and bookId.',
+  })
   async getAllActiveBookReservations(
     @Args('activeBookReservationsFilterInput')
     activeBookReservationsFilterInput: ActiveBookReservationsFilterInput,
@@ -44,7 +47,10 @@ export class ActiveBookReservationsResolver {
     return await this.bookReservationsService.getNumberOfBooksReservedPerMembers();
   }
 
-  @Query(() => [Float])
+  @Query(() => [Float], {
+    description:
+      'returns estimated return dates in epoch ms with respect to given bookId',
+  })
   async getReservedBooksEstimatedReturnDates(
     @Args('bookId', { type: () => String, nullable: false }) bookId: string,
   ): Promise<number[]> {
@@ -53,14 +59,19 @@ export class ActiveBookReservationsResolver {
     );
   }
 
-  @ResolveField(() => Book)
+  @ResolveField(() => Book, {
+    description: 'resolves book field dynamically for active book reservations',
+  })
   async getBookInfo(
     @Parent() bookReservations: ActiveBookReservationsResponseDto,
   ): Promise<Book> {
     return await this.booksService.getBookById(bookReservations.bookId);
   }
 
-  @ResolveField(() => Member)
+  @ResolveField(() => Member, {
+    description:
+      'resolves member field dynamically for active book reservations',
+  })
   async getMemberInfo(
     @Parent() bookReservations: ActiveBookReservationsResponseDto,
   ): Promise<Member> {
@@ -69,6 +80,7 @@ export class ActiveBookReservationsResolver {
     );
   }
 
+  //these two mutations can use same input
   @Mutation(() => Boolean)
   async assignBookToMember(
     @Args('assigningBookInput') assigningBookInput: AssigningBookInput,
