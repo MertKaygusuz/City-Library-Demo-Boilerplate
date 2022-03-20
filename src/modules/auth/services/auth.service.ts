@@ -1,4 +1,14 @@
-import { Logger, Injectable, BadRequestException } from '@nestjs/common';
+import {
+  Logger,
+  Injectable,
+  UnauthorizedException,
+  Scope,
+} from '@nestjs/common';
+import { I18nRequestScopeService } from 'nestjs-i18n';
+import {
+  CustomExceptionBase,
+  CustomException,
+} from 'src/filters/models/custom-exception';
 import { Member } from 'src/modules/members/entities/member.entity';
 import { MembersService } from 'src/modules/members/members.service';
 import { checkPasswordHash } from 'src/utils/functions/password-related';
@@ -8,12 +18,13 @@ import { RefreshToken } from '../entities/cache/refresh-token';
 import { AccessTokenService } from './access-token.service';
 import { RefreshTokenService } from './refresh-token.service';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class AuthService {
   constructor(
     private readonly accessTokenService: AccessTokenService,
     private readonly refreshTokenService: RefreshTokenService,
     private readonly memberService: MembersService,
+    private readonly i18n: I18nRequestScopeService,
   ) {}
 
   private readonly logger = new Logger(AuthService.name);
@@ -24,7 +35,7 @@ export class AuthService {
     );
 
     if (!member || !checkPasswordHash(loginInput.password, member.password))
-      throw new BadRequestException('User name or password is incorrect.');
+      await this.throwLoginError();
 
     const roleNames = member.roles.map((x) => x.roleName);
 
@@ -67,8 +78,7 @@ export class AuthService {
       refreshTokenKey,
     );
 
-    if (!oldToken)
-      throw new BadRequestException('Refresh token could not be found!');
+    if (!oldToken) throw new UnauthorizedException();
 
     const newToken = this.accessTokenService.createToken({
       memberId: oldToken.memberId,
@@ -101,5 +111,13 @@ export class AuthService {
     );
 
     return new TokenReponseDto(newToken.accessToken, newToken.refreshToken);
+  }
+
+  private async throwLoginError() {
+    const error = await CustomExceptionBase.createInstanceWithI18n(this.i18n, [
+      'INCORRECT_PASSWORD_OR_MEMBERNAME',
+    ]);
+
+    throw new CustomException([error]);
   }
 }

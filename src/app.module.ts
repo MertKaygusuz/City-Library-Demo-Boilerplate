@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { MembersModule } from './modules/members/members.module';
 import { BooksModule } from './modules/books/books.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import { join } from 'path';
+import * as path from 'path';
 import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -20,16 +20,28 @@ import { GqlAuthGuard } from './modules/auth/guards/gql-auth.guard';
 import { APP_FILTER, APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { GlobalExceptionFilter } from './filters/global-exception-filter';
 import { GlobalLoggingInterceptor } from './interceptors/global-logging-interceptor';
+import { HeaderResolver, I18nJsonParser, I18nModule } from 'nestjs-i18n';
+import { ValidationFilter } from './filters/validation-filter';
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    I18nModule.forRoot({
+      fallbackLanguage: 'en',
+      parser: I18nJsonParser,
+      parserOptions: {
+        path: path.join(process.cwd(), 'src/i18n/'),
+      },
+      resolvers: [new HeaderResolver(['x-custom-lang'])],
+    }),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
-      autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+      autoSchemaFile: path.join(process.cwd(), 'src/schema.gql'),
       debug: true,
       playground: true,
+      context: ({ req, connection }) =>
+        connection ? { req: connection.context } : { req },
       formatError: (error) => {
         return {
           message: error?.message,
@@ -73,6 +85,10 @@ import { GlobalLoggingInterceptor } from './interceptors/global-logging-intercep
     {
       provide: APP_FILTER,
       useClass: GlobalExceptionFilter,
+    },
+    {
+      provide: APP_FILTER,
+      useClass: ValidationFilter,
     },
     {
       provide: APP_INTERCEPTOR,

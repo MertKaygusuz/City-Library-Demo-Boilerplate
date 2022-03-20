@@ -52,4 +52,9 @@ export class RequestContext {
     const requestContext = RequestContext.currentRequestContext();
     return requestContext.request?.['ip'];
   }
+
+  public static getLangFromRequestHeader(): string {
+    const requestContext = RequestContext.currentRequestContext();
+    return requestContext.request.headers['x-custom-lang'] ?? 'en';
+  }
 }

@@ -15,7 +15,7 @@ export class RegistrationInput {
     description: 'Birth date in epoch milliseconds',
     nullable: false,
   })
-  @IsInt()
+  @IsInt({ message: 'validation-error.DATE' })
   birthDate: number;
   @Field(() => String, {
     nullable: false,
@@ -24,6 +24,6 @@ export class RegistrationInput {
   @Field(() => String, {
     nullable: false,
   })
-  @MinLength(8)
+  @MinLength(8, { message: 'validation-error.PASSWORD' })
   password: string;
 }

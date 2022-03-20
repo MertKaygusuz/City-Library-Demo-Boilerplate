@@ -11,7 +11,7 @@ import { RequestContextMiddleware } from './middlewares/request-context.middlewa
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(RequestContextMiddleware);
-  app.useGlobalFilters(new ValidationFilter());
+  //app.useGlobalFilters(new ValidationFilter());
   app.useGlobalPipes(
     new ValidationPipe({
       exceptionFactory: (errors: ValidationError[]) => {

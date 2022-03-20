@@ -1,0 +1,9 @@
+{
+    "INTERNAL_ERROR": "Internal server error!",
+    "INCORRECT_PASSWORD_OR_MEMBERNAME": "Member name or password is incorrect.",
+    "BOOK_NOT_FOUND": "Book could not be found.",
+    "MEMBER_NOT_FOUND": "Member could not be found.",
+    "NO_BOOK_RESERVATION": "Active book reservation could not be found.",
+    "BOOK_NOT_AVAILABLE": "Sorry! This book is not available now.",
+    "PASSWORD_LENGTH": "Your password must compose of minimum {minimumPasswordLength} characters."
+}

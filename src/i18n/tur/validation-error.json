@@ -1,0 +1,6 @@
+{
+    "DATE": "Milisaniye cinsinden bir epok zamanı girilmelidir.",
+    "BOOK_TITLE_TYPE": "Girdiğiniz kategori türü geçersizdir.",
+    "BOOK_COVER_TYPE": "Girdiğiniz kitap basım türü geçersizdir.",
+    "PASSWORD": "En az 8 karakter içermelidir."
+}

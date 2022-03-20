@@ -1,10 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { randomString } from 'src/utils/functions/randoms';
 import { CreateTokenResultDto } from '../dto/create-token-result.dto';
 import { CONTEXT } from '@nestjs/graphql';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class AccessTokenService {
   constructor(
     private readonly jwtService: JwtService,

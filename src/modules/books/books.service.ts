@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { ObjectID } from 'mongodb';
 import {
   CustomException,
@@ -15,12 +10,14 @@ import { RegisterBookInput } from './dto/register-book.input';
 import { TotalAvailableCountsPerTitleEndEditionNumberResponseDto } from './dto/total-available-counts-per-title-end-edition-number.response.dto';
 import { UpdateBookInput } from './dto/update-book.input';
 import { Book } from './entities/book.entity';
+import { I18nRequestScopeService } from 'nestjs-i18n';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class BooksService {
   constructor(
     @Inject(Book_Repo)
     private readonly booksRepo: IBooksRepo,
+    private readonly i18n: I18nRequestScopeService,
   ) {}
   async create(registerBookInput: RegisterBookInput): Promise<string> {
     const newBook = new Book();
@@ -47,9 +44,8 @@ export class BooksService {
       _id: new ObjectID(bookId),
       isDeleted: false,
     });
-    if (!theBook) throw new NotFoundException('Book could not be found!');
-    if (theBook.availableCount < 1)
-      throw new BadRequestException('Sorry! This book is not available now.');
+    if (!theBook) await this.throwBookNotFoundError();
+    if (theBook.availableCount < 1) await this.throwBookNotAvailableError();
     await this.booksRepo.updateById(bookId, {
       availableCount: theBook.availableCount - 1,
       reservedCount: theBook.reservedCount + 1,
@@ -61,7 +57,7 @@ export class BooksService {
       _id: new ObjectID(bookId),
       isDeleted: false,
     });
-    if (!theBook) throw new NotFoundException('Book could not be found!');
+    if (!theBook) throw await this.throwBookNotFoundError();
     await this.booksRepo.updateById(bookId, {
       availableCount: theBook.availableCount + 1,
       reservedCount: theBook.reservedCount - 1,
@@ -76,7 +72,7 @@ export class BooksService {
     const { id, ...updatedFields } = updateBookInput;
     const updatedCount = await this.booksRepo.updateById(id, updatedFields);
 
-    if (!updatedCount) throw new NotFoundException('Book could not be found!');
+    if (!updatedCount) throw await this.throwBookNotFoundError();
   }
 
   async remove(id: string) {
@@ -109,13 +105,31 @@ export class BooksService {
     return rawResult as TotalAvailableCountsPerTitleEndEditionNumberResponseDto[];
   }
 
-  customErrorExampleInBookService(): boolean {
-    const error = new CustomExceptionBase(
-      ['Book could not be found!'],
+  async customErrorExampleInBookService(): Promise<boolean> {
+    const error = await CustomExceptionBase.createInstanceWithI18n(
+      this.i18n,
+      ['error.BOOK_NOT_FOUND'],
       'fake property (optional)',
       'fake value (optional)',
     );
-    throw new CustomException([error], '400');
+
+    throw new CustomException([error], '404');
     return true;
+  }
+
+  private async throwBookNotFoundError() {
+    const error = await CustomExceptionBase.createInstanceWithI18n(this.i18n, [
+      'BOOK_NOT_FOUND',
+    ]);
+
+    throw new CustomException([error], '404');
+  }
+
+  private async throwBookNotAvailableError() {
+    const error = await CustomExceptionBase.createInstanceWithI18n(this.i18n, [
+      'BOOK_NOT_AVAILABLE',
+    ]);
+
+    throw new CustomException([error]);
   }
 }

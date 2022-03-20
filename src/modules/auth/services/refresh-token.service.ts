@@ -1,9 +1,9 @@
 import { InjectRedis } from '@liaoliaots/nestjs-redis';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Scope } from '@nestjs/common';
 import { Redis } from 'ioredis';
 import { RefreshToken } from '../entities/cache/refresh-token';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class RefreshTokenService {
   constructor(@InjectRedis() private readonly redis: Redis) {}
   expireTimeInSecods: number =

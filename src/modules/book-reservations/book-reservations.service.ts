@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { nameof } from 'ts-simple-nameof';
 import {
   Active_Reservations_Repo,
@@ -18,8 +18,13 @@ import { NumberOfBooksReservedByMembersResponseDto } from './dto/number-of-books
 import { AssigningBookInput } from './dto/assigning-book.input';
 import { BooksService } from '../books/books.service';
 import { MembersService } from '../members/members.service';
+import { I18nRequestScopeService } from 'nestjs-i18n';
+import {
+  CustomExceptionBase,
+  CustomException,
+} from 'src/filters/models/custom-exception';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class BookReservationsService {
   constructor(
     @Inject(Active_Reservations_Repo)
@@ -28,6 +33,7 @@ export class BookReservationsService {
     private readonly bookReservationHistoriesRepo: IBookReservationHistoriesRepo,
     private readonly booksService: BooksService,
     private readonly membersService: MembersService,
+    private readonly i18n: I18nRequestScopeService,
   ) {}
 
   async getReservationHistoriesByBookId(
@@ -103,8 +109,7 @@ export class BookReservationsService {
 
   private async memberExistanceCheck(memberId: string) {
     const doesMemberExist = await this.membersService.doesMemberExist(memberId);
-    if (!doesMemberExist)
-      throw new NotFoundException('Member could not be found');
+    if (!doesMemberExist) await this.throwMemberNotFoundError();
   }
 
   async assignBookToMember(assigningBookInput: AssigningBookInput) {
@@ -141,9 +146,7 @@ export class BookReservationsService {
       !activeReservation[0] ||
       !activeReservation[0]._id
     )
-      throw new NotFoundException(
-        'Active book reservation could not be found.',
-      );
+      await this.throwNoBookReservationError();
     await this.memberExistanceCheck(assigningBookInput.memberId);
     await this.booksService.updateForDispose(assigningBookInput.bookId);
     const newHistoryRecord = new BookReservationHistory();
@@ -153,5 +156,21 @@ export class BookReservationsService {
     newHistoryRecord.returnDate = Date.now();
     await this.bookReservationHistoriesRepo.create(newHistoryRecord);
     await this.activeBookReservationsRepo.deleteById(activeReservation[0]._id);
+  }
+
+  private async throwMemberNotFoundError() {
+    const error = await CustomExceptionBase.createInstanceWithI18n(this.i18n, [
+      'MEMBER_NOT_FOUND',
+    ]);
+
+    throw new CustomException([error], '404');
+  }
+
+  private async throwNoBookReservationError() {
+    const error = await CustomExceptionBase.createInstanceWithI18n(this.i18n, [
+      'NO_BOOK_RESERVATION',
+    ]);
+
+    throw new CustomException([error], '404');
   }
 }

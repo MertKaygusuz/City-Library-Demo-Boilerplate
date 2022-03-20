@@ -1,4 +1,4 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, Scope } from '@nestjs/common';
 import { nameof } from 'ts-simple-nameof';
 import { IMembersRepo, Member_Repo } from './domain/members.interface.repo';
 import { IRolesRepo, Role_Repo } from './domain/roles.interface.repo';
@@ -9,7 +9,13 @@ import { ObjectID } from 'mongodb';
 import { CONTEXT } from '@nestjs/graphql';
 import { AdminUpdateInput } from './dto/admin-update.input';
 import { SelfUpdateInput } from './dto/self-update.input';
-@Injectable()
+import { I18nRequestScopeService } from 'nestjs-i18n';
+import {
+  CustomExceptionBase,
+  CustomException,
+} from 'src/filters/models/custom-exception';
+
+@Injectable({ scope: Scope.REQUEST })
 export class MembersService {
   defaultRoleNameList = ['User'];
   constructor(
@@ -18,6 +24,7 @@ export class MembersService {
     @Inject(Role_Repo)
     private readonly rolesRepo: IRolesRepo,
     @Inject(CONTEXT) private readonly context,
+    private readonly i18n: I18nRequestScopeService,
   ) {}
 
   async doesMemberExist(memberId: string): Promise<boolean> {
@@ -33,17 +40,29 @@ export class MembersService {
     const result = await this.membersRepo.findOne({
       [memberNameKey]: memberName,
     });
-    if (!result) throw new NotFoundException('Member could not be found!');
+    if (!result) await this.throwMemberNotFoundError();
     return result;
   }
 
   async getMembersByMemberId(memberId: string): Promise<Member> {
     const result = await this.membersRepo.findOneById(memberId);
-    if (!result) throw new NotFoundException('Member could not be found!');
+    if (!result) await this.throwMemberNotFoundError();
     return result;
   }
 
   async register(registrationInput: RegistrationInput): Promise<string> {
+    //it is already handled by validation pipe
+    const minimumPasswordLength = 8;
+    if (registrationInput.password.length < minimumPasswordLength) {
+      const errorMessage = await this.i18n.translate('error.PASSWORD_LENGTH', {
+        args: { minimumPasswordLength: minimumPasswordLength },
+      });
+
+      const error = CustomExceptionBase.createInstance([errorMessage]);
+
+      throw new CustomException([error]);
+    }
+
     const newMember = new Member();
     newMember.memberName = registrationInput.memberName;
     newMember.fullName = registrationInput.fullName;
@@ -65,7 +84,7 @@ export class MembersService {
 
   async memberSelfUpdate(memberSelfUpdateInput: SelfUpdateInput) {
     const memberName = this.context.req?.user?.memberName;
-    if (!memberName) throw new NotFoundException('Member could not be found!');
+    if (!memberName) await this.throwMemberNotFoundError();
     const adminUpdateInput: AdminUpdateInput = {
       memberName: memberName,
       fullName: memberSelfUpdateInput.fullName,
@@ -87,7 +106,14 @@ export class MembersService {
       },
     );
 
-    if (!updatedCount)
-      throw new NotFoundException('Member could not be found!');
+    if (!updatedCount) await this.throwMemberNotFoundError();
+  }
+
+  private async throwMemberNotFoundError() {
+    const error = await CustomExceptionBase.createInstanceWithI18n(this.i18n, [
+      'MEMBER_NOT_FOUND',
+    ]);
+
+    throw new CustomException([error], '404');
   }
 }

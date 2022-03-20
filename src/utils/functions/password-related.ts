@@ -1,11 +1,6 @@
-import { BadRequestException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-const minimumPasswordLength = 8;
+
 export function createPasswordHash(password: string): string {
-  if (password.length < minimumPasswordLength)
-    throw new BadRequestException(
-      `Your password must compose of minimum ${minimumPasswordLength} characters`,
-    );
   return bcrypt.hashSync(password, 10);
 }
 

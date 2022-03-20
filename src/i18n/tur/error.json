@@ -1,0 +1,9 @@
+{
+    "INTERNAL_ERROR": "Sunucu kaynaklı bir hata oluştu!",
+    "INCORRECT_PASSWORD_OR_MEMBERNAME": "Üye adı veya parola hatalı.",
+    "BOOK_NOT_FOUND": "Kitap bulunamadı.",
+    "MEMBER_NOT_FOUND": "Üye bulunamadı.",
+    "NO_BOOK_RESERVATION": "Aktif kitap rezervasyonu bulunamadı.",
+    "BOOK_NOT_AVAILABLE": "Kitap, rezervasyon için uygun durumda değil.",
+    "PASSWORD_LENGTH": "Şifreniz minimum {minimumPasswordLength} karakterden oluşmalıdır."
+}

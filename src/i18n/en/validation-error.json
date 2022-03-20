@@ -1,0 +1,6 @@
+{
+    "DATE": "Must be epoch time in ms.",
+    "BOOK_TITLE_TYPE": "Book title type is invalid.",
+    "BOOK_COVER_TYPE": "Book cover type is invalid.",
+    "PASSWORD": "Must contain minimum 8 characters."
+}
