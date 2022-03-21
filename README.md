@@ -1,6 +1,6 @@
 ## Description
 
-City-Library-Demo project for boilerplate.
+City-Library-Demo project for boilerplate. (node version: 16.14.0, npm version: 8.5.2)
 
 ## First Steps
 
