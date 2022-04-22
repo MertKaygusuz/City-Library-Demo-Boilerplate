@@ -41,7 +41,6 @@ export class MembersService {
       [memberNameKey]: memberName,
     });
     if (!result) await this.throwMemberNotFoundError();
-    result.password = null;
     return result;
   }
 
@@ -71,11 +70,9 @@ export class MembersService {
     newMember.address = registrationInput.address;
     newMember.birthDate = registrationInput.birthDate;
     newMember.password = createPasswordHash(registrationInput.password);
-    const roles = await this.rolesRepo.findWithOptions({
-      where: {
-        roleName: { $in: this.defaultRoleNameList },
-      },
-    });
+    const roles = await this.rolesRepo.getRolesWithIncludingNames(
+      this.defaultRoleNameList,
+    );
 
     newMember.roles = roles;
 

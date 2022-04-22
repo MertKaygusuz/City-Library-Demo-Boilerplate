@@ -16,7 +16,9 @@ export class MembersResolver {
   async getMembersByMemberName(
     @Args('memberName', { type: () => String }) memberName: string,
   ): Promise<Member> {
-    return await this.membersService.getMembersByMemberName(memberName);
+    const result = await this.membersService.getMembersByMemberName(memberName);
+    result.password = null;
+    return result;
   }
 
   @Query(() => Member)

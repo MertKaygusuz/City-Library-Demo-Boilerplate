@@ -29,6 +29,7 @@ export class BooksService {
     newBook.firstPublishedDate = registerBookInput.firstPublishDate;
     newBook.titleType = registerBookInput.titleType;
     newBook.availableCount = registerBookInput.availableCount;
+    newBook.reservedCount = registerBookInput.reservedCount;
     await this.booksRepo.create(newBook);
     return newBook._id;
   }

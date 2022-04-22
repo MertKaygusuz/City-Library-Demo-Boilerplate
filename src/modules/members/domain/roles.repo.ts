@@ -16,4 +16,12 @@ export class RolesRepo
   ) {
     super(roleMongoRepository as Repository<Role>);
   }
+
+  async getRolesWithIncludingNames(roleNames: string[]): Promise<Role[]> {
+    return await this.findWithOptions({
+      where: {
+        roleName: { $in: roleNames },
+      },
+    });
+  }
 }

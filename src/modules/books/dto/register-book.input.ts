@@ -43,4 +43,8 @@ export class RegisterBookInput {
     nullable: false,
   })
   availableCount: number;
+  @Field(() => Int, {
+    nullable: false,
+  })
+  reservedCount: number;
 }
